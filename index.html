@@ -1,7 +1,6 @@
 
 <!DOCTYPE html>
 <html lang="vi">
-
 <head>
 
 <meta charset="UTF-8">
@@ -13,9 +12,7 @@ content="width=device-width,initial-scale=1">
 
 <style>
 
-* {
-  box-sizing: border-box;
-}
+* { box-sizing: border-box; }
 
 body {
   margin: 0;
@@ -38,10 +35,7 @@ header {
   text-align: center;
 }
 
-h1 {
-  margin: 0;
-  font-size: 30px;
-}
+h1 { margin: 0; font-size: 30px; }
 
 h2 {
   color: #f4e5a4;
@@ -58,7 +52,6 @@ section {
 label {
   display: block;
   margin-top: 15px;
-  font-size: 15px;
   font-weight: bold;
 }
 
@@ -73,25 +66,43 @@ input, select, textarea {
   font: 16px Arial;
 }
 
-textarea {
-  min-height: 100px;
-  resize: vertical;
-}
-
-button {
+button, .camera-button {
+  display: block;
   width: 100%;
   background: #f4e5a4;
   color: #222;
   border: 0;
   border-radius: 8px;
   padding: 16px;
-  margin-top: 20px;
+  margin-top: 16px;
   font-size: 16px;
   font-weight: bold;
+  text-align: center;
 }
 
 button:disabled {
-  opacity: .5;
+  opacity: .4;
+}
+
+#camera {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  overflow: hidden;
+}
+
+#preview {
+  display: none;
+  width: 100%;
+  margin-top: 15px;
+  border-radius: 8px;
+}
+
+#photoStatus, #status {
+  text-align: center;
+  color: #f4e5a4;
+  font-size: 14px;
 }
 
 footer {
@@ -101,122 +112,110 @@ footer {
   padding: 20px;
 }
 
-#status {
-  color: #f4e5a4;
-  text-align: center;
-}
-
 </style>
-
 </head>
 
 <body>
-
 <main>
 
 <header>
-
   <h1>PHỞ GÀ ĐỒI</h1>
-
   <p>ngon từ gà</p>
-
   HỆ THỐNG QUẢN LÝ VẬN HÀNH
-
 </header>
+
+<form id="reportForm"
+method="POST"
+action="https://script.google.com/macros/s/AKfycbw_UbTAImQnlFTRWJUft0pa4pODY9Gpmin79EQpnwu_5yjbI6mcitQXQCDQP-Qv04N62g/exec">
+
+<input type="hidden"
+name="reportId" id="reportId">
+
+<input type="hidden"
+name="photo" id="photo">
 
 <section>
 
 <h2>01. THÔNG TIN CA LÀM VIỆC</h2>
 
-<form
+<label>Cơ sở</label>
 
-  id="reportForm"
+<select name="branch" required>
+  <option value="">-- Chọn cơ sở --</option>
+  <option value="28 Võ Chí Công">
+    CS1 - 28 Võ Chí Công
+  </option>
+  <option value="An Khánh">
+    CS2 - An Khánh
+  </option>
+</select>
 
-  method="POST"
+<label>Họ và tên nhân viên</label>
 
-  action="https://script.google.com/macros/s/AKfycbw_UbTAImQnlFTRWJUft0pa4pODY9Gpmin79EQpnwu_5yjbI6mcitQXQCDQP-Qv04N62g/exec">
+<input name="staff"
+maxlength="60"
+placeholder="Nhập họ và tên"
+required>
 
-  <input
-    type="hidden"
-    name="reportId"
-    id="reportId">
+<label>Ca làm việc</label>
 
-  <label>Cơ sở</label>
+<select name="shift" required>
+  <option value="">-- Chọn ca --</option>
+  <option>Ca sáng</option>
+  <option>Ca tối</option>
+  <option>Ca đêm</option>
+</select>
 
-  <select name="branch" required>
+<label>Ghi chú</label>
 
-    <option value="">
-      -- Chọn cơ sở --
-    </option>
+<textarea name="note"
+maxlength="500"
+placeholder="Nội dung kiểm thử"></textarea>
 
-    <option value="28 Võ Chí Công">
-      CS1 - 28 Võ Chí Công
-    </option>
+</section>
 
-    <option value="An Khánh">
-      CS2 - An Khánh
-    </option>
+<section>
 
-  </select>
+<h2>02. HÌNH ẢNH NGHIỆM THU</h2>
 
-  <label>Họ và tên nhân viên</label>
+<p>Chụp 1 ảnh để kiểm tra hệ thống.</p>
 
-  <input
+<input
+  type="file"
+  id="camera"
+  accept="image/*"
+  capture="environment">
 
-    name="staff"
+<label for="camera"
+class="camera-button"
+id="cameraLabel">
+  📷 CHỤP ẢNH
+</label>
 
-    maxlength="60"
+<img id="preview" alt="Ảnh kiểm thử">
 
-    placeholder="Nhập họ và tên"
+<p id="photoStatus">
+  Chưa có ảnh
+</p>
 
-    required>
+</section>
 
-  <label>Ca làm việc</label>
+<section>
 
-  <select name="shift" required>
-
-    <option value="">
-      -- Chọn ca làm việc --
-    </option>
-
-    <option>Ca sáng</option>
-
-    <option>Ca tối</option>
-
-    <option>Ca đêm</option>
-
-  </select>
-
-  <label>Ghi chú báo cáo</label>
-
-  <textarea
-
-    name="note"
-
-    maxlength="500"
-
-    placeholder="Nhập nội dung kiểm thử...">
-
-  </textarea>
-
-  <button type="submit" id="submit">
-
-    GỬI BÁO CÁO KIỂM THỬ
-
-  </button>
-
-</form>
+<button type="submit"
+id="submit" disabled>
+  GỬI BÁO CÁO
+</button>
 
 <p id="status"></p>
 
 </section>
 
+</form>
+
 <footer>
-
   PHỞ GÀ ĐỒI<br><br>
-
-  Hệ thống V1.0 - Giai đoạn 3
-
+  V1.0 - Giai đoạn 4
 </footer>
 
 </main>
@@ -226,13 +225,26 @@ footer {
 const form =
   document.getElementById("reportForm");
 
+const camera =
+  document.getElementById("camera");
+
+const preview =
+  document.getElementById("preview");
+
+const photo =
+  document.getElementById("photo");
+
 const submit =
   document.getElementById("submit");
+
+const photoStatus =
+  document.getElementById("photoStatus");
 
 const status =
   document.getElementById("status");
 
 let sending = false;
+let processing = false;
 
 if (window.crypto?.randomUUID) {
 
@@ -241,19 +253,144 @@ if (window.crypto?.randomUUID) {
 
 } else {
 
-  submit.disabled = true;
-
   status.textContent =
-    "Vui lòng mở bằng Safari hoặc Chrome mới.";
+    "Vui lòng sử dụng Safari hoặc Chrome mới.";
 
 }
 
+camera.addEventListener("change", function() {
+
+  const file = camera.files[0];
+
+  if (!file || sending) return;
+
+  processing = true;
+  submit.disabled = true;
+  photo.value = "";
+  preview.style.display = "none";
+
+  photoStatus.textContent =
+    "Đang xử lý ảnh...";
+
+  const url = URL.createObjectURL(file);
+
+  const img = new Image();
+
+  img.onload = function() {
+
+    try {
+
+      const maxSize = 1280;
+
+      const ratio = Math.min(
+        1,
+        maxSize / Math.max(
+          img.width,
+          img.height
+        )
+      );
+
+      const canvas =
+        document.createElement("canvas");
+
+      canvas.width =
+        Math.max(1, Math.round(img.width * ratio));
+
+      canvas.height =
+        Math.max(1, Math.round(img.height * ratio));
+
+      const ctx = canvas.getContext("2d");
+
+      ctx.fillStyle = "#ffffff";
+
+      ctx.fillRect(
+        0, 0, canvas.width, canvas.height
+      );
+
+      ctx.drawImage(
+        img, 0, 0,
+        canvas.width, canvas.height
+      );
+
+      let quality = 0.75;
+
+      let data = canvas.toDataURL(
+        "image/jpeg", quality
+      );
+
+      while (
+        data.length > 1500000 &&
+        quality > 0.3
+      ) {
+
+        quality -= 0.1;
+
+        data = canvas.toDataURL(
+          "image/jpeg", quality
+        );
+
+      }
+
+      if (
+        !data.startsWith("data:image/jpeg;base64,") ||
+        data.length > 1500000
+      ) {
+        throw new Error("Ảnh quá lớn.");
+      }
+
+      photo.value = data;
+
+      preview.src = data;
+      preview.style.display = "block";
+
+      photoStatus.textContent =
+        "✓ Ảnh đã sẵn sàng - " +
+        Math.round(data.length * 0.75 / 1024) +
+        " KB";
+
+      document.getElementById(
+        "cameraLabel"
+      ).textContent = "📷 CHỤP LẠI";
+
+      submit.disabled =
+        !document.getElementById("reportId").value;
+
+    } catch (error) {
+
+      photoStatus.textContent =
+        "Lỗi xử lý ảnh. Vui lòng chụp lại.";
+
+    } finally {
+
+      processing = false;
+      URL.revokeObjectURL(url);
+
+    }
+
+  };
+
+  img.onerror = function() {
+
+    processing = false;
+
+    photoStatus.textContent =
+      "Không đọc được ảnh. Hãy chụp lại.";
+
+    URL.revokeObjectURL(url);
+
+  };
+
+  img.src = url;
+
+  camera.value = "";
+
+});
+
 form.addEventListener("submit", function(e) {
 
-  if (sending) {
+  if (sending || processing || !photo.value) {
 
     e.preventDefault();
-
     return;
 
   }
@@ -275,9 +412,9 @@ window.addEventListener("pageshow", function(e) {
 
     sending = false;
 
-    submit.disabled = false;
+    submit.disabled = !photo.value;
 
-    submit.textContent = "GỬI BÁO CÁO KIỂM THỬ";
+    submit.textContent = "GỬI BÁO CÁO";
 
     status.textContent =
       "Kiểm tra Telegram trước khi gửi lại.";
@@ -289,5 +426,4 @@ window.addEventListener("pageshow", function(e) {
 </script>
 
 </body>
-
 </html>
