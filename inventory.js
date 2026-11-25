@@ -1,181 +1,493 @@
 
+// ==========================================
+// PHỞ GÀ ĐỒI - QUẢN LÝ VẬN HÀNH V1.0
+// INVENTORY.JS - GIAI ĐOẠN 6.5
+// 41 HẠNG MỤC KIỂM KÊ
+// GIẢI TRÌNH + 1-5 ẢNH HÀNG HỦY
+// ==========================================
+
 const Inventory = (() => {
 
-  const groups = [
+  "use strict";
+
+  // ========================================
+  // 1. CẤU HÌNH HỆ THỐNG
+  // ========================================
+
+  const TOTAL_ITEMS = 41;
+
+  const MAX_WASTE_PHOTOS = 5;
+
+  const MAX_PHOTO_LENGTH = 350000;
+
+  const MAX_NOTE_LENGTH = 1000;
+
+  const MAX_QUANTITY = 100000;
+
+  const STATUS_OPTIONS = [
+    "Còn",
+    "Gần hết",
+    "Hết"
+  ];
+
+  const GAS_OPTIONS = [
+    "Có",
+    "Không"
+  ];
+
+
+  // ========================================
+  // 2. DANH SÁCH 41 HẠNG MỤC
+  // ========================================
+
+  const GROUPS = [
 
     {
-      name: "01. Nguyên liệu thực phẩm",
+      name: "Nguyên liệu thực phẩm",
+
       items: [
-        ["Gà sống chưa chế biến", "Con"],
-        ["Bánh phở", "Kg"],
-        ["Nước dùng", "Lít"],
-        ["Quẩy", "Cái"],
-        ["Hành, rau thơm", "Kg"],
-        ["Măng ngâm", "Kg"]
+
+        {
+          name: "Gà sống chưa chế biến",
+          unit: "Con"
+        },
+
+        {
+          name: "Bánh phở",
+          unit: "Kg"
+        },
+
+        {
+          name: "Nước dùng",
+          unit: "Lít"
+        },
+
+        {
+          name: "Quẩy",
+          unit: "Cái"
+        },
+
+        {
+          name: "Hành, rau thơm",
+          unit: "Kg"
+        },
+
+        {
+          name: "Măng ngâm",
+          unit: "Kg"
+        }
+
       ]
+
     },
 
     {
-      name: "02. Đồ uống",
+      name: "Đồ uống",
+
       items: [
-        ["Coca", "Lon"],
-        ["Nước cam", "Lon"],
-        ["Bia", "Lon"],
-        ["Bò húc", "Lon"],
-        ["Nước lọc đóng chai", "Chai"],
-        ["Đá lạnh", "status"],
-        ["Trà đá", "status"],
-        ["Trà khô pha trà đá", "status"]
+
+        {
+          name: "Coca",
+          unit: "Lon"
+        },
+
+        {
+          name: "Nước cam",
+          unit: "Lon"
+        },
+
+        {
+          name: "Bia",
+          unit: "Lon"
+        },
+
+        {
+          name: "Bò húc",
+          unit: "Lon"
+        },
+
+        {
+          name: "Nước lọc đóng chai",
+          unit: "Chai"
+        },
+
+        {
+          name: "Đá lạnh",
+          type: "status"
+        },
+
+        {
+          name: "Trà đá",
+          type: "status"
+        },
+
+        {
+          name: "Trà khô pha trà đá",
+          type: "status"
+        }
+
       ]
+
     },
 
     {
-      name: "03. Gia vị và nguyên liệu phụ",
+      name: "Gia vị và nguyên liệu phụ",
+
       items: [
-        ["Chanh, quất", "status"],
-        ["Ớt tươi", "status"],
-        ["Giấm", "status"],
-        ["Nước mắm", "status"],
-        ["Tương ớt", "status"],
-        ["Muối, bột canh", "status"],
-        ["Mì chính", "status"],
-        ["Gừng", "status"],
-        ["Hành khô", "status"],
-        ["Hạt tiêu", "status"]
+
+        { name: "Chanh, quất", type: "status" },
+
+        { name: "Ớt tươi", type: "status" },
+
+        { name: "Giấm", type: "status" },
+
+        { name: "Nước mắm", type: "status" },
+
+        { name: "Tương ớt", type: "status" },
+
+        { name: "Muối, bột canh", type: "status" },
+
+        { name: "Mì chính", type: "status" },
+
+        { name: "Gừng", type: "status" },
+
+        { name: "Hành khô", type: "status" },
+
+        { name: "Hạt tiêu", type: "status" }
+
       ]
+
     },
 
     {
-      name: "04. Vật tư phục vụ khách hàng",
+      name: "Vật tư phục vụ khách hàng",
+
       items: [
-        ["Giấy ăn", "status"],
-        ["Giấy vệ sinh", "status"],
-        ["Găng tay", "status"],
-        ["Tăm", "status"]
+
+        { name: "Giấy ăn", type: "status" },
+
+        { name: "Giấy vệ sinh", type: "status" },
+
+        { name: "Găng tay", type: "status" },
+
+        { name: "Tăm", type: "status" }
+
       ]
+
     },
 
     {
-      name: "05. Đồ đóng gói mang về",
+      name: "Đồ đóng gói mang về",
+
       items: [
-        ["Hộp đựng phở", "status"],
-        ["Túi đựng nước dùng", "status"],
-        ["Túi nilon mang về", "status"],
-        ["Đũa dùng một lần", "status"],
-        ["Thìa dùng một lần", "status"],
-        ["Hộp đựng gà chặt", "status"],
-        ["Hộp đựng gia vị", "status"]
+
+        { name: "Hộp đựng phở", type: "status" },
+
+        { name: "Túi đựng nước dùng", type: "status" },
+
+        { name: "Túi nilon mang về", type: "status" },
+
+        { name: "Đũa dùng một lần", type: "status" },
+
+        { name: "Thìa dùng một lần", type: "status" },
+
+        { name: "Hộp đựng gà chặt", type: "status" },
+
+        { name: "Hộp đựng gia vị", type: "status" }
+
       ]
+
     },
 
     {
-      name: "06. Vật tư vệ sinh và nhiên liệu",
+      name: "Vật tư vệ sinh và nhiên liệu",
+
       items: [
-        ["Nước rửa bát", "status"],
-        ["Nước lau sàn", "status"],
-        ["Nước rửa tay", "status"],
-        ["Túi đựng rác", "status"],
-        ["Nước tẩy nhà vệ sinh", "status"],
-        ["Gas dự phòng", "gas"]
+
+        { name: "Nước rửa bát", type: "status" },
+
+        { name: "Nước lau sàn", type: "status" },
+
+        { name: "Nước rửa tay", type: "status" },
+
+        { name: "Túi đựng rác", type: "status" },
+
+        { name: "Nước tẩy nhà vệ sinh", type: "status" },
+
+        { name: "Gas dự phòng", type: "gas" }
+
       ]
+
     }
 
   ];
 
 
-  const items = groups.flatMap(
+  const ITEMS = GROUPS.flatMap(
     group => group.items
   );
 
-  const values = {};
+
+  // ========================================
+  // 3. DỮ LIỆU NỘI BỘ
+  // ========================================
+
+  let values = {};
+
+  let wastePhotos = [];
+
+  let wasteProcessing = false;
+
+  let wasteRevision = 0;
 
   let container = null;
 
-  let onChange = () => {};
+  let onChange = function() {};
 
+
+  // ========================================
+  // 4. PHÂN LOẠI HẠNG MỤC
+  // ========================================
 
   function isQuantity(item) {
 
-    return !["status", "gas"]
-      .includes(item[1]);
+    return (
+
+      item.type !== "status" &&
+
+      item.type !== "gas"
+
+    );
+
+  }
+
+
+  function getOptions(item) {
+
+    return item.type === "gas"
+
+      ? GAS_OPTIONS
+
+      : STATUS_OPTIONS;
+
+  }
+
+
+  function allowsDecimal(item) {
+
+    return (
+
+      item.unit === "Kg" ||
+
+      item.unit === "Lít"
+
+    );
+
+  }
+
+
+  // ========================================
+  // 5. KHỞI TẠO DỮ LIỆU
+  // ========================================
+
+  function resetValues() {
+
+    values = {};
+
+    wastePhotos = [];
+
+    wasteProcessing = false;
+
+    wasteRevision += 1;
+
+
+    ITEMS.forEach(function(item) {
+
+      if (isQuantity(item)) {
+
+        values[item.name] = {
+
+          remaining: "",
+
+          waste: "0"
+
+        };
+
+      } else {
+
+        values[item.name] = {
+
+          status: ""
+
+        };
+
+      }
+
+    });
+
+  }
+
+
+  // ========================================
+  // 6. KIỂM TRA SỐ LƯỢNG
+  // ========================================
+
+  function validNumber(value, item) {
+
+    if (
+
+      value === undefined ||
+
+      value === null ||
+
+      String(value).trim() === ""
+
+    ) {
+
+      return false;
+
+    }
+
+
+    const number = Number(value);
+
+
+    if (
+
+      !Number.isFinite(number) ||
+
+      number < 0 ||
+
+      number > MAX_QUANTITY
+
+    ) {
+
+      return false;
+
+    }
+
+
+    if (
+
+      !allowsDecimal(item) &&
+
+      !Number.isInteger(number)
+
+    ) {
+
+      return false;
+
+    }
+
+
+    return true;
 
   }
 
 
   function isValid(item) {
 
-    const value = values[item[0]];
+    const value = values[item.name];
 
-    if (!isQuantity(item)) {
 
-      const options = item[1] === "gas"
-        ? ["Có", "Không"]
-        : ["Còn", "Gần hết", "Hết"];
+    if (!value) return false;
 
-      return options.includes(value);
+
+    if (isQuantity(item)) {
+
+      return (
+
+        validNumber(value.remaining, item) &&
+
+        validNumber(value.waste, item)
+
+      );
 
     }
 
-    if (!Array.isArray(value)) {
 
-      return false;
+    return getOptions(item).includes(
 
-    }
+      value.status
 
-    return value.length === 2 &&
-      value.every(v => {
+    );
 
-        if (String(v).trim() === "") {
+  }
 
-          return false;
 
-        }
+  // ========================================
+  // 7. ĐẾM TIẾN ĐỘ KIỂM KÊ
+  // ========================================
 
-        const n = Number(v);
+  function getCount() {
 
-        if (
-          !Number.isFinite(n) ||
-          n < 0 ||
-          n > 100000
-        ) {
+    return ITEMS.filter(isValid).length;
 
-          return false;
+  }
 
-        }
 
-        if (
-          !["Kg", "Lít"].includes(item[1])
-        ) {
+  // ========================================
+  // 8. DANH SÁCH HÀNG HỦY
+  // ========================================
 
-          return Number.isInteger(n);
+  function getWasteItems() {
 
-        }
+    return ITEMS
 
-        return true;
+      .filter(isQuantity)
+
+      .filter(function(item) {
+
+        const value = values[item.name];
+
+        return (
+
+          value &&
+
+          Number(value.waste) > 0
+
+        );
+
+      })
+
+      .map(function(item) {
+
+        return {
+
+          name: item.name,
+
+          unit: item.unit,
+
+          waste: Number(
+
+            values[item.name].waste
+
+          )
+
+        };
 
       });
 
   }
 
 
-  function getCount() {
+  function hasWaste() {
 
-    return items.filter(isValid).length;
+    return getWasteItems().length > 0;
 
   }
 
 
-  function hasWaste() {
+  function getWastePhotoCount() {
 
-    return items.some(item => {
+    return wastePhotos.length;
 
-      const value = values[item[0]];
+  }
 
-      return isQuantity(item) &&
-        Array.isArray(value) &&
-        Number(value[1]) > 0;
 
-    });
+  function isWasteProcessing() {
+
+    return wasteProcessing;
 
   }
 
@@ -183,641 +495,2600 @@ const Inventory = (() => {
   function getNote() {
 
     const field = document.getElementById(
+
       "inventoryNote"
+
     );
 
-    return field ? field.value.trim() : "";
+
+    return field
+
+      ? field.value.trim()
+
+      : "";
 
   }
 
+
+  // ========================================
+  // 9. KIỂM TRA HOÀN THÀNH HÀNG HỦY
+  // ========================================
+
+  function isWasteComplete() {
+
+    if (wasteProcessing) {
+
+      return false;
+
+    }
+
+
+    if (!hasWaste()) {
+
+      return true;
+
+    }
+
+
+    const note = getNote();
+
+
+    return (
+
+      note.length > 0 &&
+
+      note.length <= MAX_NOTE_LENGTH &&
+
+      wastePhotos.length >= 1 &&
+
+      wastePhotos.length <= MAX_WASTE_PHOTOS
+
+    );
+
+  }
+
+
+  // ========================================
+  // 10. KIỂM TRA HOÀN THÀNH KIỂM KÊ
+  // ========================================
 
   function isComplete() {
 
-    return getCount() === 41 &&
-      (!hasWaste() || getNote() !== "") &&
-      getNote().length <= 1000;
+    return (
+
+      getCount() === TOTAL_ITEMS &&
+
+      isWasteComplete()
+
+    );
 
   }
 
+
+  // ========================================
+  // 11. DỮ LIỆU GỬI VỀ API
+  // ========================================
 
   function getData() {
 
     if (!isComplete()) {
 
       throw new Error(
-        "Chưa hoàn thành kiểm kê."
+
+        "Chưa hoàn thành kiểm kê hoặc " +
+
+        "thiếu giải trình, ảnh hàng hủy."
+
       );
 
     }
 
+
     return {
 
-      inventory: items
+      inventory: ITEMS
+
         .filter(isQuantity)
-        .map(item => ({
 
-          name: item[0],
+        .map(function(item) {
 
-          remaining: Number(
-            values[item[0]][0]
-          ),
+          return {
 
-          waste: Number(
-            values[item[0]][1]
-          )
+            name: item.name,
 
-        })),
+            remaining: Number(
 
-      supplies: items
+              values[item.name].remaining
+
+            ),
+
+            waste: Number(
+
+              values[item.name].waste
+
+            )
+
+          };
+
+        }),
+
+
+      supplies: ITEMS
+
         .filter(item => !isQuantity(item))
-        .map(item => ({
 
-          name: item[0],
+        .map(function(item) {
 
-          status: values[item[0]]
+          return {
 
-        })),
+            name: item.name,
 
-      inventoryNote: getNote()
+            status: values[item.name].status
+
+          };
+
+        }),
+
+
+      inventoryNote: hasWaste()
+
+        ? getNote()
+
+        : "",
+
+
+      wastePhotos: hasWaste()
+
+        ? wastePhotos.map(function(photo) {
+
+            return {
+
+              data: photo.data
+
+            };
+
+          })
+
+        : []
 
     };
 
   }
 
 
+  // ========================================
+  // 12. ĐỊNH DẠNG SỐ
+  // ========================================
+
+  function formatNumber(value) {
+
+    return Number(value).toLocaleString(
+
+      "vi-VN",
+
+      {
+
+        maximumFractionDigits: 10
+
+      }
+
+    );
+
+  }
+
+
+  // ========================================
+  // 13. TẠO GIAO DIỆN CSS
+  // ========================================
+
   function installStyles() {
 
     if (
+
       document.getElementById(
+
         "inventoryStyles"
+
       )
+
     ) return;
 
-    const style =
-      document.createElement("style");
+
+    const style = document.createElement(
+
+      "style"
+
+    );
+
 
     style.id = "inventoryStyles";
+
 
     style.textContent = `
 
       #inventoryModule {
-        background: #242424;
-        padding: 16px;
-        border-radius: 12px;
-        margin: 16px 0;
+
         color: #ffffff;
+
       }
 
-      #inventoryModule * {
-        box-sizing: border-box;
+      #inventoryModule [hidden] {
+
+        display: none !important;
+
       }
 
-      .inv-heading {
+      #inventoryModule .inv-section {
+
+        background: #242424;
+
+        padding: 16px;
+
+        margin-top: 16px;
+
+        border-radius: 12px;
+
+      }
+
+      #inventoryModule h2 {
+
         color: #f4e5a4;
-        font-size: 17px;
-        font-weight: bold;
-        margin-bottom: 15px;
+
+        font-size: 18px;
+
       }
 
-      .inv-progress {
-        background: #444;
+      #inventoryModule .inv-progress-text {
+
+        color: #f4e5a4;
+
+        font-size: 20px;
+
+        font-weight: bold;
+
+      }
+
+      #inventoryModule .inv-progress {
+
+        background: #444444;
+
         height: 9px;
-        border-radius: 20px;
-        overflow: hidden;
-        margin: 10px 0 16px;
-      }
 
-      #invProgressBar {
-        background: #21864b;
-        width: 0%;
-        height: 100%;
-        transition: width .2s;
-      }
-
-      .inv-group {
-        border: 1px solid #444;
         border-radius: 10px;
-        margin: 12px 0;
+
         overflow: hidden;
+
+        margin: 12px 0;
+
       }
 
-      .inv-group summary {
-        padding: 15px 12px;
-        cursor: pointer;
-        background: #303030;
-        color: #f4e5a4;
-        font-size: 14px;
-        font-weight: bold;
+      #inventoryModule .inv-progress-bar {
+
+        width: 0%;
+
+        height: 100%;
+
+        background: #63d991;
+
+        transition: width .2s;
+
       }
 
-      .inv-group-count {
-        display: block;
+      #inventoryModule .inv-guide {
+
         color: #bbbbbb;
-        font-size: 12px;
-        margin-top: 5px;
+
+        font-size: 13px;
+
+        line-height: 1.7;
+
       }
 
-      .inv-item {
-        padding: 13px 10px;
-        border-bottom: 1px solid #444;
+      #inventoryModule .inv-group {
+
+        background: #303030;
+
+        border: 1px solid #555555;
+
+        border-radius: 9px;
+
+        margin-top: 12px;
+
+        overflow: hidden;
+
       }
 
-      .inv-item:last-child {
-        border-bottom: none;
-      }
+      #inventoryModule .inv-group summary {
 
-      .inv-name {
-        font-size: 15px;
+        padding: 15px 12px;
+
+        color: #f4e5a4;
+
+        font-size: 14px;
+
         font-weight: bold;
-        margin-bottom: 10px;
+
+        cursor: pointer;
+
       }
 
-      .inv-quantity {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 8px;
-      }
+      #inventoryModule .inv-group-count {
 
-      .inv-field {
-        min-width: 0;
-      }
+        float: right;
 
-      .inv-field label {
-        display: block;
-        color: #cccccc;
+        color: #bbbbbb;
+
         font-size: 12px;
-        margin-bottom: 6px;
+
       }
 
-      #inventoryModule input,
-      #inventoryModule textarea {
-        display: block;
-        width: 100%;
+      #inventoryModule .inv-group-count.done {
+
+        color: #63d991;
+
+      }
+
+      #inventoryModule .inv-group-body {
+
+        padding: 0 12px 12px;
+
+      }
+
+      #inventoryModule .inv-item {
+
+        border-top: 1px solid #484848;
+
+        padding: 14px 0;
+
+      }
+
+      #inventoryModule .inv-name {
+
+        font-size: 14px;
+
+        font-weight: bold;
+
+        line-height: 1.6;
+
+        margin-bottom: 10px;
+
+      }
+
+      #inventoryModule .inv-fields {
+
+        display: grid;
+
+        grid-template-columns: 1fr 1fr;
+
+        gap: 10px;
+
+      }
+
+      #inventoryModule .inv-fields > div {
+
         min-width: 0;
-        padding: 12px;
-        border: 1px solid #555;
-        border-radius: 7px;
-        background: #181818;
-        color: white;
-        font-size: 16px;
+
       }
 
-      .inv-options {
+      #inventoryModule label {
+
+        display: block;
+
+        font-size: 12px;
+
+        margin: 0 0 6px;
+
+        color: #bbbbbb;
+
+      }
+
+      #inventoryModule input[type="number"],
+
+      #inventoryModule textarea {
+
+        width: 100%;
+
+        min-width: 0;
+
+        padding: 12px;
+
+        margin: 0;
+
+        background: #191919;
+
+        color: #ffffff;
+
+        border: 1px solid #666666;
+
+        border-radius: 7px;
+
+        font-size: 16px;
+
+        box-sizing: border-box;
+
+      }
+
+      #inventoryModule .inv-options {
+
         display: flex;
+
         gap: 6px;
+
       }
 
       #inventoryModule .inv-option {
+
         flex: 1;
-        width: auto;
+
         padding: 12px 4px;
-        border: 1px solid #555;
+
+        border: 1px solid #666666;
+
         border-radius: 7px;
-        background: #303030;
-        color: white;
+
+        background: #191919;
+
+        color: #ffffff;
+
         font-size: 13px;
+
         cursor: pointer;
+
       }
 
-      #inventoryModule .inv-option.active.green {
-        background: #21864b;
-        border-color: #21864b;
+      #inventoryModule .inv-option.selected.good {
+
+        background: #21613d;
+
+        border-color: #63d991;
+
+        color: #ffffff;
+
       }
 
-      #inventoryModule .inv-option.active.yellow {
-        background: #b98012;
-        border-color: #b98012;
+      #inventoryModule .inv-option.selected.low {
+
+        background: #765718;
+
+        border-color: #f4c34e;
+
+        color: #ffffff;
+
       }
 
-      #inventoryModule .inv-option.active.red {
-        background: #c73737;
-        border-color: #c73737;
+      #inventoryModule .inv-option.selected.bad {
+
+        background: #782c2c;
+
+        border-color: #ff7777;
+
+        color: #ffffff;
+
       }
 
-      .inv-warning {
-        background: #181818;
+      #inventoryModule .inv-warning {
+
         padding: 12px;
+
+        margin-top: 12px;
+
+        background: #191919;
+
         border-radius: 8px;
-        margin: 15px 0;
-        font-size: 14px;
-        line-height: 1.7;
-        overflow-wrap: anywhere;
-      }
 
-      .inv-note-label {
-        display: block;
-        font-size: 14px;
-        margin: 12px 0 8px;
-      }
-
-      #invWasteWarning {
-        color: #ff8888;
         font-size: 13px;
-        margin: 8px 0;
+
+        line-height: 1.7;
+
+        overflow-wrap: anywhere;
+
+      }
+
+      #inventoryModule .inv-out {
+
+        color: #ff8888;
+
+      }
+
+      #inventoryModule .inv-low {
+
+        color: #f4c34e;
+
+      }
+
+      #inventoryModule .inv-waste-box {
+
+        border: 1px solid #b47c39;
+
+        border-radius: 10px;
+
+        padding: 14px;
+
+        margin-top: 16px;
+
+        background: #2d2520;
+
+      }
+
+      #inventoryModule .inv-waste-title {
+
+        font-size: 16px;
+
+        font-weight: bold;
+
+        color: #f4c34e;
+
+        margin-bottom: 14px;
+
+      }
+
+      #inventoryModule .inv-waste-list {
+
+        background: #191919;
+
+        padding: 12px;
+
+        border-radius: 8px;
+
+        margin-bottom: 16px;
+
+      }
+
+      #inventoryModule .inv-waste-row {
+
+        display: flex;
+
+        justify-content: space-between;
+
+        gap: 10px;
+
+        padding: 7px 0;
+
+        font-size: 13px;
+
+        line-height: 1.5;
+
+      }
+
+      #inventoryModule .inv-waste-value {
+
+        color: #ff8888;
+
+        font-weight: bold;
+
+        text-align: right;
+
+        flex-shrink: 0;
+
+      }
+
+      #inventoryModule .inv-required-title {
+
+        color: #ff9999;
+
+        font-size: 14px;
+
+        font-weight: bold;
+
+        margin: 15px 0 10px;
+
+      }
+
+      #inventoryModule .inv-note {
+
+        min-height: 110px;
+
+        resize: vertical;
+
+      }
+
+      #inventoryModule .inv-camera {
+
+        position: static;
+
+        display: block;
+
+        opacity: 1;
+
+        width: 100%;
+
+        height: auto;
+
+        padding: 12px;
+
+        margin: 10px 0;
+
+        background: #f4e5a4;
+
+        color: #222222;
+
+        border: 0;
+
+        border-radius: 8px;
+
+        box-sizing: border-box;
+
+      }
+
+      #inventoryModule .inv-camera:disabled {
+
+        opacity: .5;
+
+      }
+
+      #inventoryModule .inv-photo-count {
+
+        color: #f4e5a4;
+
+        font-size: 14px;
+
+        font-weight: bold;
+
+        margin-top: 10px;
+
+      }
+
+      #inventoryModule .inv-photo-card {
+
+        background: #191919;
+
+        padding: 10px;
+
+        border-radius: 8px;
+
+        margin-top: 12px;
+
+      }
+
+      #inventoryModule .inv-photo-card img {
+
+        display: block;
+
+        width: 100%;
+
+        max-height: 300px;
+
+        object-fit: contain;
+
+        border-radius: 6px;
+
+      }
+
+      #inventoryModule .inv-photo-caption {
+
+        color: #bbbbbb;
+
+        font-size: 12px;
+
+        margin-top: 8px;
+
+      }
+
+      #inventoryModule .inv-delete-photo {
+
+        width: 100%;
+
+        background: #782c2c;
+
+        color: #ffffff;
+
+        border: 1px solid #a94d4d;
+
+        padding: 10px;
+
+        border-radius: 6px;
+
+        margin-top: 10px;
+
+        font-size: 13px;
+
+      }
+
+      #inventoryModule .inv-waste-error {
+
+        color: #ff8888;
+
+        font-size: 13px;
+
+        line-height: 1.7;
+
+        white-space: pre-line;
+
+        margin-top: 12px;
+
+      }
+
+      #inventoryModule .inv-waste-ok {
+
+        color: #63d991;
+
+        font-size: 13px;
+
+        line-height: 1.7;
+
+        margin-top: 12px;
+
+      }
+
+      #inventoryModule .inv-photo-status {
+
+        color: #f4c34e;
+
+        font-size: 13px;
+
+        line-height: 1.7;
+
+        margin-top: 8px;
+
       }
 
     `;
+
 
     document.head.appendChild(style);
 
   }
 
 
+  // ========================================
+  // 14. CẬP NHẬT CẢNH BÁO KIỂM KÊ
+  // ========================================
+
+  function refreshWarnings() {
+
+    const out = [];
+
+    const low = [];
+
+
+    ITEMS.forEach(function(item) {
+
+      const value = values[item.name];
+
+
+      if (isQuantity(item)) {
+
+        if (
+
+          validNumber(value.remaining, item) &&
+
+          Number(value.remaining) === 0
+
+        ) {
+
+          out.push(item.name);
+
+        }
+
+      } else {
+
+        if (value.status === "Hết") {
+
+          out.push(item.name);
+
+        }
+
+
+        if (value.status === "Gần hết") {
+
+          low.push(item.name);
+
+        }
+
+
+        if (
+
+          item.type === "gas" &&
+
+          value.status === "Không"
+
+        ) {
+
+          out.push("Không có gas dự phòng");
+
+        }
+
+      }
+
+    });
+
+
+    const outBox = document.getElementById(
+
+      "invOut"
+
+    );
+
+
+    const lowBox = document.getElementById(
+
+      "invLow"
+
+    );
+
+
+    outBox.hidden = out.length === 0;
+
+
+    outBox.textContent =
+
+      "HẾT / KHÔNG CÒN: " +
+
+      out.join("; ");
+
+
+    lowBox.hidden = low.length === 0;
+
+
+    lowBox.textContent =
+
+      "GẦN HẾT: " +
+
+      low.join("; ");
+
+  }
+
+
+  // ========================================
+  // 15. HIỂN THỊ ẢNH HÀNG HỦY
+  // ========================================
+
+  function renderWastePhotos() {
+
+    const list = document.getElementById(
+
+      "invWastePhotoList"
+
+    );
+
+
+    if (!list) return;
+
+
+    list.replaceChildren();
+
+
+    wastePhotos.forEach(function(photo, i) {
+
+      const card = document.createElement(
+
+        "div"
+
+      );
+
+
+      card.className = "inv-photo-card";
+
+
+      const image = document.createElement(
+
+        "img"
+
+      );
+
+
+      image.src = photo.data;
+
+      image.alt = "Ảnh hàng hủy " + (i + 1);
+
+
+      const caption = document.createElement(
+
+        "div"
+
+      );
+
+
+      caption.className = "inv-photo-caption";
+
+
+      caption.textContent =
+
+        "Ảnh minh chứng " + (i + 1);
+
+
+      const remove = document.createElement(
+
+        "button"
+
+      );
+
+
+      remove.type = "button";
+
+      remove.className = "inv-delete-photo";
+
+
+      remove.textContent =
+
+        "XÓA ẢNH / CHỤP LẠI";
+
+
+      remove.addEventListener(
+
+        "click",
+
+        function() {
+
+          if (wasteProcessing) return;
+
+
+          wastePhotos.splice(i, 1);
+
+
+          renderWastePhotos();
+
+          refresh();
+
+        }
+
+      );
+
+
+      card.appendChild(image);
+
+      card.appendChild(caption);
+
+      card.appendChild(remove);
+
+
+      list.appendChild(card);
+
+    });
+
+  }
+
+
+  // ========================================
+  // 16. XÓA MINH CHỨNG KHÔNG CÒN PHÙ HỢP
+  // ========================================
+
+  function invalidateWasteEvidence() {
+
+    wasteRevision += 1;
+
+    wastePhotos = [];
+
+
+    const note = document.getElementById(
+
+      "inventoryNote"
+
+    );
+
+
+    if (note) {
+
+      note.value = "";
+
+    }
+
+
+    const photoStatus = document.getElementById(
+
+      "invWastePhotoStatus"
+
+    );
+
+
+    if (photoStatus) {
+
+      photoStatus.textContent =
+
+        hasWaste()
+
+          ? "Số lượng hàng hủy đã thay đổi. " +
+
+            "Vui lòng bổ sung lại minh chứng."
+
+          : "";
+
+    }
+
+
+    renderWastePhotos();
+
+  }
+
+
+  // ========================================
+  // 17. CẬP NHẬT PHẦN HÀNG HỦY
+  // ========================================
+
+  function refreshWaste() {
+
+    const wasteItems = getWasteItems();
+
+
+    const active = wasteItems.length > 0;
+
+
+    const box = document.getElementById(
+
+      "invWasteBox"
+
+    );
+
+
+    const noWaste = document.getElementById(
+
+      "invNoWaste"
+
+    );
+
+
+    const list = document.getElementById(
+
+      "invWasteItems"
+
+    );
+
+
+    const note = document.getElementById(
+
+      "inventoryNote"
+
+    );
+
+
+    const camera = document.getElementById(
+
+      "invWasteCamera"
+
+    );
+
+
+    const photoCount = document.getElementById(
+
+      "invWastePhotoCount"
+
+    );
+
+
+    const warning = document.getElementById(
+
+      "invWasteWarning"
+
+    );
+
+
+    const success = document.getElementById(
+
+      "invWasteSuccess"
+
+    );
+
+
+    box.hidden = !active;
+
+    noWaste.hidden = active;
+
+
+    note.required = active;
+
+
+    list.replaceChildren();
+
+
+    wasteItems.forEach(function(item) {
+
+      const row = document.createElement(
+
+        "div"
+
+      );
+
+
+      row.className = "inv-waste-row";
+
+
+      const name = document.createElement(
+
+        "span"
+
+      );
+
+
+      name.textContent = item.name;
+
+
+      const value = document.createElement(
+
+        "span"
+
+      );
+
+
+      value.className = "inv-waste-value";
+
+
+      value.textContent =
+
+        formatNumber(item.waste) +
+
+        " " +
+
+        item.unit;
+
+
+      row.appendChild(name);
+
+      row.appendChild(value);
+
+
+      list.appendChild(row);
+
+    });
+
+
+    photoCount.textContent =
+
+      "Ảnh hàng hủy: " +
+
+      wastePhotos.length +
+
+      "/" +
+
+      MAX_WASTE_PHOTOS;
+
+
+    camera.hidden =
+
+      wastePhotos.length >= MAX_WASTE_PHOTOS;
+
+
+    const branch = document.getElementById(
+
+      "branch"
+
+    );
+
+
+    const staff = document.getElementById(
+
+      "staff"
+
+    );
+
+
+    const shift = document.getElementById(
+
+      "shift"
+
+    );
+
+
+    const hasIdentity = Boolean(
+
+      branch && branch.value &&
+
+      staff && staff.value.trim() &&
+
+      shift && shift.value
+
+    );
+
+
+    camera.disabled =
+
+      !active ||
+
+      !hasIdentity ||
+
+      wasteProcessing ||
+
+      wastePhotos.length >= MAX_WASTE_PHOTOS;
+
+
+    const errors = [];
+
+
+    if (active) {
+
+      if (!getNote()) {
+
+        errors.push(
+
+          "• Bắt buộc giải trình nguyên nhân hủy."
+
+        );
+
+      }
+
+
+      if (getNote().length > MAX_NOTE_LENGTH) {
+
+        errors.push(
+
+          "• Giải trình không được quá 1000 ký tự."
+
+        );
+
+      }
+
+
+      if (wastePhotos.length === 0) {
+
+        errors.push(
+
+          "• Bắt buộc có ít nhất 1 ảnh hàng hủy."
+
+        );
+
+      }
+
+
+      if (wasteProcessing) {
+
+        errors.push(
+
+          "• Đang xử lý ảnh, vui lòng chờ."
+
+        );
+
+      }
+
+    }
+
+
+    warning.textContent = errors.join("\n");
+
+    warning.hidden = errors.length === 0;
+
+
+    success.hidden =
+
+      !active ||
+
+      !isWasteComplete();
+
+
+    success.textContent =
+
+      "✓ Đã có đầy đủ giải trình " +
+
+      "và hình ảnh hàng hủy.";
+
+  }
+
+
+  // ========================================
+  // 18. CẬP NHẬT TOÀN BỘ TIẾN ĐỘ
+  // ========================================
+
   function refresh() {
 
     if (!container) return;
 
+
     const count = getCount();
 
+
     document.getElementById(
+
       "invProgressText"
+
     ).textContent =
-      "Đã kiểm kê: " + count + "/41";
+
+      "Đã kiểm kê: " +
+
+      count +
+
+      "/" +
+
+      TOTAL_ITEMS;
+
 
     document.getElementById(
+
       "invProgressBar"
+
     ).style.width =
-      (count / 41 * 100) + "%";
+
+      (count / TOTAL_ITEMS * 100) + "%";
 
 
-    groups.forEach((group, i) => {
+    GROUPS.forEach(function(group, i) {
 
-      const done =
+      const groupCount =
+
         group.items.filter(isValid).length;
 
-      const field = document.getElementById(
+
+      const element = document.getElementById(
+
         "invGroupCount" + i
+
       );
 
-      field.textContent =
-        done + "/" + group.items.length +
-        (done === group.items.length
-          ? " ✓"
-          : "");
 
-      field.style.color =
-        done === group.items.length
-          ? "#63d991"
-          : "#bbbbbb";
+      element.textContent =
 
-    });
+        groupCount + "/" + group.items.length;
 
 
-    const low = items.filter(
-      item => values[item[0]] === "Gần hết"
-    );
+      element.classList.toggle(
 
-    const out = items.filter(item => {
+        "done",
 
-      const value = values[item[0]];
+        groupCount === group.items.length
 
-      return value === "Hết" ||
-        value === "Không" ||
-        (
-          isQuantity(item) &&
-          Array.isArray(value) &&
-          value[0] !== "" &&
-          Number(value[0]) === 0
-        );
+      );
 
     });
 
 
-    document.getElementById(
-      "invOut"
-    ).textContent = out.length
+    refreshWarnings();
 
-      ? out.map(item => item[0]).join(", ")
-
-      : "Chưa ghi nhận";
-
-
-    document.getElementById(
-      "invLow"
-    ).textContent = low.length
-
-      ? low.map(item => item[0]).join(", ")
-
-      : "Chưa ghi nhận";
-
-
-    document.getElementById(
-      "invWasteWarning"
-    ).textContent = hasWaste()
-
-      ? "⚠ Bắt buộc giải trình lý do hàng hủy."
-
-      : "";
-
-
-    const note = document.getElementById(
-      "inventoryNote"
-    );
-
-    note.required = hasWaste();
+    refreshWaste();
 
     onChange();
 
   }
 
 
-  function renderQuantity(item, parent) {
+  // ========================================
+  // 19. TẠO Ô NHẬP SỐ LƯỢNG
+  // ========================================
 
-    const wrapper =
-      document.createElement("div");
+  function renderQuantity(item) {
 
-    wrapper.className = "inv-quantity";
+    const wrapper = document.createElement(
 
-    values[item[0]] = ["", ""];
+      "div"
 
-    ["Tồn cuối", "Hàng hủy"]
-      .forEach((label, i) => {
+    );
 
-        const field =
-          document.createElement("div");
 
-        field.className = "inv-field";
+    wrapper.className = "inv-fields";
 
-        const caption =
-          document.createElement("label");
 
-        caption.textContent =
-          label + " (" + item[1] + ")";
+    const fields = [
 
-        const input =
-          document.createElement("input");
+      {
 
-        input.type = "number";
-        input.min = "0";
-        input.max = "100000";
+        key: "remaining",
 
-        input.step =
-          ["Kg", "Lít"].includes(item[1])
-            ? "any"
-            : "1";
+        label: "Tồn cuối ca"
 
-        input.inputMode =
-          ["Kg", "Lít"].includes(item[1])
-            ? "decimal"
-            : "numeric";
+      },
 
-        input.placeholder = "Nhập số";
+      {
 
-        input.setAttribute(
-          "aria-label",
-          item[0] + " - " + label
-        );
+        key: "waste",
 
-        input.addEventListener(
-          "input",
-          () => {
+        label: "Hàng hủy"
 
-            values[item[0]][i] = input.value;
+      }
 
-            refresh();
+    ];
+
+
+    fields.forEach(function(field) {
+
+      const box = document.createElement(
+
+        "div"
+
+      );
+
+
+      const label = document.createElement(
+
+        "label"
+
+      );
+
+
+      label.textContent =
+
+        field.label + " (" + item.unit + ")";
+
+
+      const input = document.createElement(
+
+        "input"
+
+      );
+
+
+      input.type = "number";
+
+      input.min = "0";
+
+      input.max = String(MAX_QUANTITY);
+
+
+      input.step = allowsDecimal(item)
+
+        ? "any"
+
+        : "1";
+
+
+      input.inputMode = allowsDecimal(item)
+
+        ? "decimal"
+
+        : "numeric";
+
+
+      input.required = true;
+
+
+      input.placeholder =
+
+        field.key === "remaining"
+
+          ? "Nhập tồn"
+
+          : "0";
+
+
+      input.value = values[item.name][field.key];
+
+
+      input.addEventListener(
+
+        "input",
+
+        function() {
+
+          const previous =
+
+            values[item.name][field.key];
+
+
+          values[item.name][field.key] =
+
+            input.value;
+
+
+          if (
+
+            field.key === "waste" &&
+
+            Number(previous) !== Number(input.value)
+
+          ) {
+
+            invalidateWasteEvidence();
 
           }
-        );
 
-        field.appendChild(caption);
-        field.appendChild(input);
-
-        wrapper.appendChild(field);
-
-      });
-
-    parent.appendChild(wrapper);
-
-  }
-
-
-  function renderStatus(item, parent) {
-
-    const wrapper =
-      document.createElement("div");
-
-    wrapper.className = "inv-options";
-
-    const options = item[1] === "gas"
-
-      ? ["Có", "Không"]
-
-      : ["Còn", "Gần hết", "Hết"];
-
-
-    options.forEach(option => {
-
-      const button =
-        document.createElement("button");
-
-      button.type = "button";
-
-      button.className = "inv-option " + (
-
-        ["Còn", "Có"].includes(option)
-          ? "green"
-          : option === "Gần hết"
-            ? "yellow"
-            : "red"
-
-      );
-
-      button.textContent = option;
-
-      button.setAttribute(
-        "aria-pressed", "false"
-      );
-
-      button.addEventListener(
-        "click",
-        () => {
-
-          values[item[0]] = option;
-
-          wrapper.querySelectorAll("button")
-            .forEach(b => {
-
-              b.classList.remove("active");
-
-              b.setAttribute(
-                "aria-pressed", "false"
-              );
-
-            });
-
-          button.classList.add("active");
-
-          button.setAttribute(
-            "aria-pressed", "true"
-          );
 
           refresh();
 
         }
+
       );
+
+
+      if (field.key === "waste") {
+
+        input.addEventListener(
+
+          "blur",
+
+          function() {
+
+            if (input.value.trim() === "") {
+
+              input.value = "0";
+
+              values[item.name].waste = "0";
+
+              refresh();
+
+            }
+
+          }
+
+        );
+
+      }
+
+
+      label.appendChild(input);
+
+      box.appendChild(label);
+
+      wrapper.appendChild(box);
+
+    });
+
+
+    return wrapper;
+
+  }
+
+
+  // ========================================
+  // 20. TẠO NÚT TRẠNG THÁI VẬT TƯ
+  // ========================================
+
+  function renderStatus(item) {
+
+    const wrapper = document.createElement(
+
+      "div"
+
+    );
+
+
+    wrapper.className = "inv-options";
+
+
+    getOptions(item).forEach(function(option) {
+
+      const button = document.createElement(
+
+        "button"
+
+      );
+
+
+      button.type = "button";
+
+      button.className = "inv-option";
+
+
+      if (
+
+        option === "Còn" ||
+
+        option === "Có"
+
+      ) {
+
+        button.classList.add("good");
+
+      } else if (option === "Gần hết") {
+
+        button.classList.add("low");
+
+      } else {
+
+        button.classList.add("bad");
+
+      }
+
+
+      button.textContent = option;
+
+
+      button.setAttribute(
+
+        "aria-pressed",
+
+        "false"
+
+      );
+
+
+      button.addEventListener(
+
+        "click",
+
+        function() {
+
+          values[item.name].status = option;
+
+
+          wrapper
+
+            .querySelectorAll("button")
+
+            .forEach(function(other) {
+
+              other.classList.remove("selected");
+
+              other.setAttribute(
+
+                "aria-pressed",
+
+                "false"
+
+              );
+
+            });
+
+
+          button.classList.add("selected");
+
+
+          button.setAttribute(
+
+            "aria-pressed",
+
+            "true"
+
+          );
+
+
+          refresh();
+
+        }
+
+      );
+
 
       wrapper.appendChild(button);
 
     });
 
-    parent.appendChild(wrapper);
+
+    return wrapper;
 
   }
 
+
+  // ========================================
+  // 21. XỬ LÝ ẢNH HÀNG HỦY
+  // ========================================
+
+  function processWastePhoto(file) {
+
+    if (
+
+      !file ||
+
+      !hasWaste() ||
+
+      wasteProcessing ||
+
+      wastePhotos.length >= MAX_WASTE_PHOTOS
+
+    ) return;
+
+
+    const branch = document.getElementById(
+
+      "branch"
+
+    );
+
+
+    const staff = document.getElementById(
+
+      "staff"
+
+    );
+
+
+    const shift = document.getElementById(
+
+      "shift"
+
+    );
+
+
+    const photoStatus = document.getElementById(
+
+      "invWastePhotoStatus"
+
+    );
+
+
+    if (
+
+      !branch || !branch.value ||
+
+      !staff || !staff.value.trim() ||
+
+      !shift || !shift.value
+
+    ) {
+
+      photoStatus.textContent =
+
+        "Vui lòng nhập đầy đủ thông tin nhân viên.";
+
+      return;
+
+    }
+
+
+    const selectedBranch = branch.value;
+
+    const selectedShift = shift.value;
+
+    const revision = wasteRevision;
+
+
+    wasteProcessing = true;
+
+
+    photoStatus.textContent =
+
+      "Đang xử lý ảnh hàng hủy...";
+
+
+    refresh();
+
+
+    let url;
+
+
+    try {
+
+      url = URL.createObjectURL(file);
+
+    } catch (error) {
+
+      wasteProcessing = false;
+
+
+      photoStatus.textContent =
+
+        "Không thể mở ảnh. Vui lòng chụp lại.";
+
+
+      refresh();
+
+      return;
+
+    }
+
+
+    const image = new Image();
+
+
+    function finish() {
+
+      wasteProcessing = false;
+
+      URL.revokeObjectURL(url);
+
+      renderWastePhotos();
+
+      refresh();
+
+    }
+
+
+    image.onload = function() {
+
+      try {
+
+        if (
+
+          revision !== wasteRevision ||
+
+          !hasWaste() ||
+
+          branch.value !== selectedBranch ||
+
+          shift.value !== selectedShift
+
+        ) {
+
+          throw new Error(
+
+            "Thông tin hàng hủy đã thay đổi. " +
+
+            "Vui lòng chụp lại ảnh."
+
+          );
+
+        }
+
+
+        const maxSize = 1000;
+
+
+        const ratio = Math.min(
+
+          1,
+
+          maxSize / Math.max(
+
+            image.width,
+
+            image.height
+
+          )
+
+        );
+
+
+        const canvas = document.createElement(
+
+          "canvas"
+
+        );
+
+
+        canvas.width = Math.max(
+
+          1,
+
+          Math.round(image.width * ratio)
+
+        );
+
+
+        const imageHeight = Math.max(
+
+          1,
+
+          Math.round(image.height * ratio)
+
+        );
+
+
+        const stampHeight = Math.max(
+
+          100,
+
+          Math.round(canvas.width * 0.18)
+
+        );
+
+
+        canvas.height =
+
+          imageHeight + stampHeight;
+
+
+        const ctx = canvas.getContext("2d");
+
+
+        if (!ctx) {
+
+          throw new Error(
+
+            "Không thể xử lý hình ảnh."
+
+          );
+
+        }
+
+
+        ctx.fillStyle = "#ffffff";
+
+
+        ctx.fillRect(
+
+          0,
+
+          0,
+
+          canvas.width,
+
+          canvas.height
+
+        );
+
+
+        ctx.drawImage(
+
+          image,
+
+          0,
+
+          0,
+
+          canvas.width,
+
+          imageHeight
+
+        );
+
+
+        // ĐÓNG DẤU THÔNG TIN
+
+        ctx.fillStyle = "#151515";
+
+
+        ctx.fillRect(
+
+          0,
+
+          imageHeight,
+
+          canvas.width,
+
+          stampHeight
+
+        );
+
+
+        const fontSize = Math.max(
+
+          10,
+
+          Math.round(canvas.width * 0.028)
+
+        );
+
+
+        ctx.font =
+
+          "bold " + fontSize + "px Arial";
+
+
+        const textWidth = Math.max(
+
+          1,
+
+          canvas.width - 20
+
+        );
+
+
+        ctx.fillStyle = "#f4e5a4";
+
+
+        ctx.fillText(
+
+          "PHỞ GÀ ĐỒI - " + selectedBranch,
+
+          10,
+
+          imageHeight + stampHeight * 0.22,
+
+          textWidth
+
+        );
+
+
+        ctx.fillStyle = "#ff9999";
+
+
+        ctx.fillText(
+
+          "MINH CHỨNG HÀNG HỦY",
+
+          10,
+
+          imageHeight + stampHeight * 0.45,
+
+          textWidth
+
+        );
+
+
+        ctx.fillStyle = "#ffffff";
+
+
+        ctx.fillText(
+
+          selectedShift +
+
+          " - " +
+
+          getWasteItems().length +
+
+          " loại hàng hủy",
+
+          10,
+
+          imageHeight + stampHeight * 0.68,
+
+          textWidth
+
+        );
+
+
+        const time = new Date().toLocaleString(
+
+          "vi-VN",
+
+          {
+
+            timeZone: "Asia/Ho_Chi_Minh"
+
+          }
+
+        );
+
+
+        ctx.fillText(
+
+          "Xử lý ảnh: " + time,
+
+          10,
+
+          imageHeight + stampHeight * 0.9,
+
+          textWidth
+
+        );
+
+
+        // NÉN ẢNH JPEG
+
+        let quality = 0.72;
+
+
+        let data = canvas.toDataURL(
+
+          "image/jpeg",
+
+          quality
+
+        );
+
+
+        while (
+
+          data.length > MAX_PHOTO_LENGTH &&
+
+          quality > 0.25
+
+        ) {
+
+          quality = Math.max(
+
+            0.25,
+
+            quality - 0.08
+
+          );
+
+
+          data = canvas.toDataURL(
+
+            "image/jpeg",
+
+            quality
+
+          );
+
+        }
+
+
+        if (
+
+          !data.startsWith(
+
+            "data:image/jpeg;base64,"
+
+          ) ||
+
+          data.length > MAX_PHOTO_LENGTH
+
+        ) {
+
+          throw new Error(
+
+            "Ảnh quá lớn. Vui lòng chụp lại."
+
+          );
+
+        }
+
+
+        if (
+
+          wastePhotos.length >= MAX_WASTE_PHOTOS
+
+        ) {
+
+          throw new Error(
+
+            "Chỉ được gửi tối đa 5 ảnh hàng hủy."
+
+          );
+
+        }
+
+
+        wastePhotos.push({
+
+          data: data
+
+        });
+
+
+        photoStatus.textContent =
+
+          "✓ Đã thêm ảnh minh chứng hàng hủy.";
+
+
+      } catch (error) {
+
+        photoStatus.textContent =
+
+          error.message ||
+
+          "Lỗi xử lý ảnh. Vui lòng chụp lại.";
+
+
+      } finally {
+
+        finish();
+
+      }
+
+    };
+
+
+    image.onerror = function() {
+
+      photoStatus.textContent =
+
+        "Không đọc được ảnh. Vui lòng chụp lại.";
+
+
+      finish();
+
+    };
+
+
+    image.src = url;
+
+  }
+
+
+  // ========================================
+  // 22. KHỞI TẠO GIAO DIỆN KIỂM KÊ
+  // ========================================
 
   function mount(element, callback) {
 
     if (!element) {
 
       throw new Error(
+
         "Không tìm thấy khu vực kiểm kê."
+
       );
 
     }
 
+
+    if (ITEMS.length !== TOTAL_ITEMS) {
+
+      throw new Error(
+
+        "Danh sách kiểm kê không đủ 41 hạng mục."
+
+      );
+
+    }
+
+
     container = element;
 
+
     onChange =
+
       typeof callback === "function"
+
         ? callback
-        : () => {};
+
+        : function() {};
+
+
+    resetValues();
 
     installStyles();
 
+
     container.innerHTML = `
 
-      <div class="inv-heading">
-        02. KIỂM KÊ CUỐI NGÀY
+      <div class="inv-section">
+
+        <h2>02. KIỂM KÊ CUỐI NGÀY</h2>
+
+        <div
+
+          id="invProgressText"
+
+          class="inv-progress-text">
+
+          Đã kiểm kê: 0/41
+
+        </div>
+
+        <div class="inv-progress">
+
+          <div
+
+            id="invProgressBar"
+
+            class="inv-progress-bar">
+
+          </div>
+
+        </div>
+
+        <p class="inv-guide">
+
+          Nhập đầy đủ số lượng tồn cuối ca.
+
+          Hàng hủy mặc định bằng 0.
+
+          Nếu phát sinh hàng hủy, bắt buộc
+
+          giải trình và chụp từ 1-5 ảnh.
+
+        </p>
+
+        <p class="inv-guide">
+
+          Gần hết: Không đủ sử dụng cho
+
+          ngày làm việc tiếp theo.
+
+          Gas dự phòng: Bình gas dự phòng
+
+          còn sử dụng được.
+
+        </p>
+
+        <div id="invGroups"></div>
+
+        <div
+
+          id="invOut"
+
+          class="inv-warning inv-out"
+
+          hidden>
+
+        </div>
+
+        <div
+
+          id="invLow"
+
+          class="inv-warning inv-low"
+
+          hidden>
+
+        </div>
+
+        <div
+
+          id="invNoWaste"
+
+          class="inv-waste-ok">
+
+          ✓ Không phát sinh hàng hủy.
+
+        </div>
+
+        <div
+
+          id="invWasteBox"
+
+          class="inv-waste-box"
+
+          hidden>
+
+          <div class="inv-waste-title">
+
+            ⚠ PHÁT SINH HÀNG HỦY
+
+          </div>
+
+          <div
+
+            id="invWasteItems"
+
+            class="inv-waste-list">
+
+          </div>
+
+          <div class="inv-required-title">
+
+            01. GIẢI TRÌNH NGUYÊN NHÂN *
+
+          </div>
+
+          <textarea
+
+            id="inventoryNote"
+
+            class="inv-note"
+
+            maxlength="1000"
+
+            placeholder="Nhập nguyên nhân hủy của từng loại nguyên liệu, tình trạng hàng hủy...">
+
+          </textarea>
+
+          <div class="inv-required-title">
+
+            02. HÌNH ẢNH MINH CHỨNG *
+
+          </div>
+
+          <p class="inv-guide">
+
+            Chụp rõ nguyên liệu và số lượng
+
+            trước khi tiêu hủy.
+
+            Bắt buộc ít nhất 1 ảnh,
+
+            tối đa 5 ảnh.
+
+            Nếu có nhiều loại hàng hủy,
+
+            ảnh phải bao quát đầy đủ.
+
+          </p>
+
+          <div
+
+            id="invWastePhotoCount"
+
+            class="inv-photo-count">
+
+            Ảnh hàng hủy: 0/5
+
+          </div>
+
+          <input
+
+            type="file"
+
+            id="invWasteCamera"
+
+            class="inv-camera"
+
+            accept="image/*"
+
+            capture="environment">
+
+          <div
+
+            id="invWastePhotoStatus"
+
+            class="inv-photo-status">
+
+          </div>
+
+          <div id="invWastePhotoList"></div>
+
+          <div
+
+            id="invWasteWarning"
+
+            class="inv-waste-error">
+
+          </div>
+
+          <div
+
+            id="invWasteSuccess"
+
+            class="inv-waste-ok"
+
+            hidden>
+
+          </div>
+
+        </div>
+
       </div>
-
-      <div id="invProgressText">
-        Đã kiểm kê: 0/41
-      </div>
-
-      <div class="inv-progress">
-        <div id="invProgressBar"></div>
-      </div>
-
-      <div id="invGroups"></div>
-
-      <div class="inv-warning">
-
-        <strong>🔴 HẾT / KHÔNG CÓ</strong>
-
-        <div id="invOut"></div>
-
-        <br>
-
-        <strong>🟡 GẦN HẾT</strong>
-
-        <div id="invLow"></div>
-
-      </div>
-
-      <label
-        class="inv-note-label"
-        for="inventoryNote">
-
-        Ghi chú và giải trình hàng hủy
-
-      </label>
-
-      <textarea
-        id="inventoryNote"
-        rows="4"
-        maxlength="1000"
-        placeholder="Nhập lý do hàng hủy hoặc nội dung cần bổ sung...">
-      </textarea>
-
-      <div id="invWasteWarning"></div>
 
     `;
 
-    const groupContainer =
-      document.getElementById("invGroups");
+
+    const groupsElement = document.getElementById(
+
+      "invGroups"
+
+    );
 
 
-    groups.forEach((group, i) => {
+    GROUPS.forEach(function(group, i) {
 
-      const details =
-        document.createElement("details");
+      const details = document.createElement(
+
+        "details"
+
+      );
+
 
       details.className = "inv-group";
 
       details.open = i === 0;
 
-      const summary =
-        document.createElement("summary");
 
-      summary.textContent = group.name;
+      const summary = document.createElement(
 
-      const counter =
-        document.createElement("span");
+        "summary"
 
-      counter.className = "inv-group-count";
-
-      counter.id = "invGroupCount" + i;
-
-      summary.appendChild(counter);
-
-      details.appendChild(summary);
+      );
 
 
-      group.items.forEach(item => {
+      const name = document.createElement(
 
-        const row =
-          document.createElement("div");
+        "span"
 
-        row.className = "inv-item";
+      );
 
-        const name =
-          document.createElement("div");
 
-        name.className = "inv-name";
+      name.textContent = group.name;
 
-        name.textContent = item[0];
 
-        row.appendChild(name);
+      const count = document.createElement(
+
+        "span"
+
+      );
+
+
+      count.id = "invGroupCount" + i;
+
+      count.className = "inv-group-count";
+
+
+      count.textContent =
+
+        "0/" + group.items.length;
+
+
+      summary.appendChild(name);
+
+      summary.appendChild(count);
+
+
+      const body = document.createElement(
+
+        "div"
+
+      );
+
+
+      body.className = "inv-group-body";
+
+
+      group.items.forEach(function(item) {
+
+        const wrapper = document.createElement(
+
+          "div"
+
+        );
+
+
+        wrapper.className = "inv-item";
+
+
+        const title = document.createElement(
+
+          "div"
+
+        );
+
+
+        title.className = "inv-name";
+
+
+        title.textContent = item.name;
+
+
+        wrapper.appendChild(title);
+
 
         if (isQuantity(item)) {
 
-          renderQuantity(item, row);
+          wrapper.appendChild(
+
+            renderQuantity(item)
+
+          );
 
         } else {
 
-          renderStatus(item, row);
+          wrapper.appendChild(
+
+            renderStatus(item)
+
+          );
 
         }
 
-        details.appendChild(row);
+
+        body.appendChild(wrapper);
 
       });
 
-      groupContainer.appendChild(details);
+
+      details.appendChild(summary);
+
+      details.appendChild(body);
+
+
+      groupsElement.appendChild(details);
 
     });
 
 
-    document.getElementById(
-      "inventoryNote"
-    ).value = "";
+    const note = document.getElementById(
 
-    document.getElementById(
       "inventoryNote"
-    ).addEventListener("input", refresh);
+
+    );
+
+
+    note.value = "";
+
+
+    note.addEventListener(
+
+      "input",
+
+      refresh
+
+    );
+
+
+    const camera = document.getElementById(
+
+      "invWasteCamera"
+
+    );
+
+
+    camera.addEventListener(
+
+      "change",
+
+      function() {
+
+        const file = camera.files[0];
+
+
+        if (file) {
+
+          processWastePhoto(file);
+
+        }
+
+
+        camera.value = "";
+
+      }
+
+    );
+
+
+    renderWastePhotos();
 
     refresh();
 
   }
 
 
+  // ========================================
+  // 23. KẾT NỐI VỚI INDEX.HTML
+  // ========================================
+
   return {
 
-    mount,
-    isComplete,
-    getCount,
-    getData
+    mount: mount,
+
+    isComplete: isComplete,
+
+    getCount: getCount,
+
+    getData: getData,
+
+    hasWaste: hasWaste,
+
+    getWasteItems: getWasteItems,
+
+    getWastePhotoCount: getWastePhotoCount,
+
+    isWasteComplete: isWasteComplete,
+
+    isWasteProcessing: isWasteProcessing,
+
+    refresh: refresh
 
   };
 
 })();
+
+
+// ==========================================
+// KẾT THÚC INVENTORY.JS - GIAI ĐOẠN 6.5
+// ==========================================
