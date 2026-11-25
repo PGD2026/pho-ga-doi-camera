@@ -3,54 +3,78 @@
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Phở Gà Đồi Camera V3.1</title>
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0">
+<title>Phở Gà Đồi - Camera V4.0</title>
 
 <style>
-* { box-sizing: border-box; }
+
+* {
+  box-sizing: border-box;
+}
+
+[hidden] {
+  display: none !important;
+}
 
 body {
   margin: 0;
-  padding: 15px;
-  background: #151515;
-  color: white;
+  background: #121212;
+  color: #ffffff;
   font-family: Arial, sans-serif;
 }
 
-main {
+.container {
   max-width: 600px;
   margin: auto;
+  padding: 15px;
 }
 
-header {
+.header {
   background: #941c1c;
   color: #f4e5a4;
-  padding: 22px;
-  border-radius: 12px;
   text-align: center;
+  padding: 24px 12px;
+  border-radius: 12px;
+  margin-bottom: 16px;
 }
 
-h1 { margin: 0; }
-h3 { color: #f4e5a4; }
+.header h1 {
+  margin: 0 0 10px;
+  font-size: 28px;
+}
 
-section {
-  background: #242424;
-  padding: 15px;
+.header p {
+  margin: 5px 0;
+  font-size: 13px;
+}
+
+.card {
+  background: #222222;
+  border: 1px solid #383838;
   border-radius: 12px;
-  margin-top: 15px;
+  padding: 16px;
+  margin-bottom: 15px;
+}
+
+h2 {
+  font-size: 18px;
+  color: #f4e5a4;
+  margin-top: 0;
 }
 
 label {
   display: block;
-  margin: 12px 0 6px;
+  font-size: 14px;
+  margin: 12px 0 8px;
 }
 
 input, select {
   width: 100%;
-  padding: 13px;
-  background: #333;
+  padding: 14px;
+  background: #303030;
   color: white;
-  border: 1px solid #666;
+  border: 1px solid #555;
   border-radius: 8px;
   font-size: 16px;
 }
@@ -59,86 +83,103 @@ button {
   width: 100%;
   border: none;
   border-radius: 8px;
-  padding: 15px;
+  padding: 15px 10px;
+  margin-top: 12px;
   background: #941c1c;
   color: white;
-  font-size: 16px;
+  font-size: 15px;
   font-weight: bold;
-  margin-top: 10px;
   cursor: pointer;
 }
 
-button:disabled { opacity: .45; }
+button:disabled {
+  opacity: .5;
+  cursor: not-allowed;
+}
 
-[hidden] { display: none !important; }
+.green {
+  background: #21864b;
+}
 
-.secondary { background: #555; }
-.green { background: #21864b; }
+.gray {
+  background: #484848;
+}
+
+.gold {
+  background: #f4e5a4;
+  color: #242424;
+}
 
 .progress {
-  height: 8px;
+  height: 10px;
   background: #444;
-  border-radius: 10px;
+  border-radius: 20px;
   overflow: hidden;
+  margin: 12px 0;
 }
 
 #bar {
   height: 100%;
-  width: 0;
-  background: #35b76b;
-  transition: width .2s;
+  width: 0%;
+  background: #36b66b;
+  transition: width .3s;
 }
 
 .task {
-  padding: 13px 0;
-  border-bottom: 1px solid #444;
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 10px;
+  background: #303030;
+  border-radius: 8px;
+  padding: 12px;
+  margin-bottom: 8px;
+  font-size: 14px;
 }
-
-.task span { flex: 1; }
-.done { color: #63d991; }
-.current { color: #f4e5a4; }
 
 .task button {
   width: auto;
-  padding: 8px;
+  padding: 10px 14px;
   margin: 0;
+  flex-shrink: 0;
   font-size: 12px;
 }
 
-.camera {
+.completed {
+  border-left: 4px solid #36b66b;
+}
+
+.cameraBox {
   position: relative;
   background: black;
   border-radius: 10px;
   overflow: hidden;
 }
 
-video, canvas {
-  width: 100%;
+video {
   display: block;
+  width: 100%;
+  max-height: 65vh;
+  object-fit: contain;
 }
 
-.watermark {
+#watermark {
   position: absolute;
-  bottom: 0;
-  width: 100%;
-  padding: 12px;
+  bottom: 10px;
+  left: 10px;
+  right: 10px;
   background: rgba(0,0,0,.65);
-  font-size: 13px;
+  color: white;
+  padding: 10px;
+  font-size: 12px;
   line-height: 1.5;
-  overflow-wrap: anywhere;
+  white-space: pre-line;
+  pointer-events: none;
 }
 
-#capture {
-  display: block;
-  width: 76px;
-  height: 76px;
-  background: white;
-  border: 6px solid #888;
-  border-radius: 50%;
-  margin: 18px auto;
+#reviewImage {
+  width: 100%;
+  border-radius: 8px;
 }
 
 .gallery {
@@ -147,158 +188,255 @@ video, canvas {
   gap: 10px;
 }
 
-.photo {
-  background: #333;
+.photoItem {
+  background: #303030;
   border-radius: 8px;
-  padding: 8px;
-  font-size: 13px;
+  overflow: hidden;
 }
 
-.photo img {
+.photoItem img {
   width: 100%;
-  border-radius: 6px;
+  aspect-ratio: 4/3;
+  object-fit: contain;
+  background: black;
+  display: block;
+}
+
+.photoItem p {
+  padding: 8px;
+  font-size: 12px;
+  margin: 0;
+}
+
+.photoItem button {
+  margin: 0;
+  border-radius: 0;
+  font-size: 12px;
+  padding: 10px;
+}
+
+.small {
+  color: #bbbbbb;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.success {
+  color: #63d991;
 }
 
 #status {
+  white-space: pre-line;
+  line-height: 1.6;
   color: #f4e5a4;
-  text-align: center;
-  line-height: 1.5;
+  font-size: 14px;
 }
+
+.footer {
+  text-align: center;
+  font-size: 12px;
+  color: #888;
+  padding: 15px;
+}
+
 </style>
 </head>
 
 <body>
-<main>
 
-<header>
-  <h1>PHỞ GÀ ĐỒI</h1>
-  <p>ngon từ gà</p>
-  <b>CAMERA NGHIỆM THU V3.1</b>
-</header>
+<div class="container">
 
-<section>
-  <h3>1. THÔNG TIN NHÂN VIÊN</h3>
-
-  <label>Cơ sở cửa hàng</label>
-  <select id="branch">
-    <option value="">Chọn cơ sở</option>
-    <option>28 Võ Chí Công</option>
-    <option>An Khánh</option>
-  </select>
-
-  <label>Họ và tên</label>
-  <input id="staff"
-    maxlength="60"
-    placeholder="Nhập họ và tên">
-
-  <button id="begin" onclick="beginReport()">
-    BẮT ĐẦU NGHIỆM THU
-  </button>
-</section>
-
-<section id="workflow" hidden>
-
-  <h3>2. TIẾN ĐỘ NGHIỆM THU</h3>
-
-  <p id="progressText">0/8 ảnh</p>
-
-  <div class="progress">
-    <div id="bar"></div>
+  <div class="header">
+    <h1>PHỞ GÀ ĐỒI</h1>
+    <p>NGON TỪ GÀ</p>
+    <p>HỆ THỐNG NGHIỆM THU CUỐI CA</p>
+    <p>CAMERA V4.0</p>
   </div>
 
-  <div id="tasks"></div>
+  <div class="card" id="infoSection">
 
-  <button id="openNext" onclick="openNext()">
-    MỞ CAMERA
-  </button>
+    <h2>01. THÔNG TIN NHÂN VIÊN</h2>
 
-</section>
+    <label>Cơ sở làm việc *</label>
 
-<section id="cameraSection" hidden>
+    <select id="branch">
+      <option value="">Chọn cơ sở</option>
+      <option value="28 Võ Chí Công">
+        CS1 - 28 Võ Chí Công
+      </option>
+      <option value="An Khánh">
+        CS2 - An Khánh
+      </option>
+    </select>
 
-  <h3 id="areaTitle"></h3>
+    <label>Họ và tên nhân viên *</label>
 
-  <div class="camera">
+    <input id="staff"
+      maxlength="60"
+      placeholder="Nhập họ và tên">
 
-    <video id="video"
-      autoplay playsinline muted hidden>
-    </video>
+    <button id="begin"
+      onclick="beginReport()">
+      BẮT ĐẦU NGHIỆM THU
+    </button>
 
-    <canvas id="canvas" hidden></canvas>
+  </div>
 
-    <div id="watermark"
-      class="watermark" hidden>
+  <div id="workflow" hidden>
 
-      <b style="color:#f4e5a4">
-        PHỞ GÀ ĐỒI
-      </b>
+    <div class="card" id="taskSection">
 
-      <div id="liveInfo"></div>
-      <div id="clock"></div>
+      <h2>02. DANH SÁCH NGHIỆM THU</h2>
+
+      <div id="reportInfo"
+        class="small"></div>
+
+      <p id="progressText">
+        Đã hoàn thành: 0/8 ảnh
+      </p>
+
+      <div class="progress">
+        <div id="bar"></div>
+      </div>
+
+      <div id="tasks"></div>
+
+      <button id="openNext"
+        class="gold"
+        onclick="nextArea()">
+        CHỤP ẢNH TIẾP THEO
+      </button>
 
     </div>
+
+    <div class="card"
+      id="cameraSection" hidden>
+
+      <h2 id="areaTitle"></h2>
+
+      <div class="cameraBox">
+
+        <video id="video"
+          autoplay
+          playsinline
+          muted></video>
+
+        <div id="watermark"></div>
+
+      </div>
+
+      <p class="small">
+        Chụp rõ toàn bộ khu vực cần nghiệm thu.
+      </p>
+
+      <button id="capture"
+        class="gold"
+        onclick="takePhoto()"
+        disabled>
+        CHỤP ẢNH
+      </button>
+
+      <button class="gray"
+        onclick="cancelCamera()">
+        QUAY LẠI
+      </button>
+
+    </div>
+
+    <div class="card"
+      id="reviewSection" hidden>
+
+      <h2>KIỂM TRA HÌNH ẢNH</h2>
+
+      <img id="reviewImage"
+        alt="Ảnh nghiệm thu">
+
+      <button class="green"
+        onclick="confirmPhoto()">
+        XÁC NHẬN ẢNH
+      </button>
+
+      <button class="gray"
+        onclick="retryPhoto()">
+        CHỤP LẠI
+      </button>
+
+      <button class="gray"
+        onclick="cancelCamera()">
+        QUAY LẠI DANH SÁCH
+      </button>
+
+    </div>
+
+    <div class="card"
+      id="gallerySection" hidden>
+
+      <h2>03. HÌNH ẢNH ĐÃ XÁC NHẬN</h2>
+
+      <div class="gallery"
+        id="gallery"></div>
+
+    </div>
+
+    <div class="card"
+      id="finishSection" hidden>
+
+      <h2 class="success">
+        HOÀN THÀNH 8/8 ẢNH
+      </h2>
+
+      <p class="small">
+        Kiểm tra lại hình ảnh trước khi
+        nộp báo cáo cho quản lý.
+      </p>
+
+      <label>Mã PIN nộp báo cáo *</label>
+
+      <input id="reportPin"
+        type="password"
+        autocomplete="off"
+        placeholder="Nhập mã PIN">
+
+      <label style="display:flex;gap:10px;
+        align-items:flex-start">
+
+        <input id="confirmCheck"
+          type="checkbox"
+          style="width:20px;height:20px;
+          flex-shrink:0">
+
+        <span>
+          Tôi xác nhận đã kiểm tra đầy đủ
+          các khu vực và hình ảnh nghiệm thu.
+        </span>
+
+      </label>
+
+      <button id="submitReport"
+        class="green"
+        onclick="finishReport()">
+        NỘP BÁO CÁO NGHIỆM THU
+      </button>
+
+    </div>
+
   </div>
 
-  <button id="capture"
-    aria-label="Chụp ảnh"
-    onclick="takePhoto()" hidden>
-  </button>
+  <p id="status" role="status"></p>
 
-  <div id="review" hidden>
+  <canvas id="canvas" hidden></canvas>
 
-    <button class="green"
-      onclick="confirmPhoto()">
-      XÁC NHẬN ẢNH
-    </button>
-
-    <button class="secondary"
-      onclick="startCamera()">
-      CHỤP LẠI
-    </button>
-
+  <div class="footer">
+    PHỞ GÀ ĐỒI<br>
+    Hệ thống quản lý vận hành nội bộ V4.0
   </div>
 
-  <button id="retry"
-    onclick="startCamera()" hidden>
-    THỬ MỞ CAMERA LẠI
-  </button>
-
-  <button class="secondary"
-    onclick="cancelCamera()">
-    QUAY LẠI DANH SÁCH
-  </button>
-
-</section>
-
-<section id="gallerySection" hidden>
-
-  <h3>3. HÌNH ẢNH ĐÃ CHỤP</h3>
-
-  <div id="gallery" class="gallery"></div>
-
-</section>
-
-<section id="finishSection" hidden>
-
-  <h3>HOÀN THÀNH 8/8 ẢNH</h3>
-
-  <p>
-    Vui lòng kiểm tra lại toàn bộ
-    hình ảnh nghiệm thu.
-  </p>
-
-  <button class="green"
-    onclick="finishReport()">
-    XÁC NHẬN HOÀN THÀNH
-  </button>
-
-</section>
-
-<p id="status" role="status"></p>
-
-</main>
+</div>
 
 <script>
+
+const API_URL =
+"https://script.google.com/macros/s/AKfycbzj1PGjPBgdpWONgunP2ZgtDPZe914LB5WTb8S00M-soQIJssFrrheRrOqEjb3abr1x/exec";
 
 const $ = id => document.getElementById(id);
 
@@ -318,15 +456,19 @@ const photos = Array(8).fill(null);
 let stream = null;
 let current = 0;
 let temporaryPhoto = null;
-let opening = false;
-let cameraRequest = 0;
 let branch = "";
 let staff = "";
 let reportId = "";
+let submitting = false;
+let cameraRequest = 0;
 
-function getTime() {
+function showStatus(message) {
+  $("status").textContent = message;
+}
 
-  return new Intl.DateTimeFormat("vi-VN", {
+function vietnamTime() {
+
+  return new Date().toLocaleString("vi-VN", {
     timeZone: "Asia/Ho_Chi_Minh",
     day: "2-digit",
     month: "2-digit",
@@ -334,25 +476,40 @@ function getTime() {
     hour: "2-digit",
     minute: "2-digit",
     second: "2-digit",
-    hourCycle: "h23"
-  }).format(new Date());
+    hour12: false
+  });
 
 }
-
-setInterval(() => {
-  $("clock").textContent = getTime();
-}, 500);
 
 function beginReport() {
 
   branch = $("branch").value;
   staff = $("staff").value.trim();
 
-  if (!branch || !staff) {
+  if (!branch) {
+    alert("Vui lòng chọn cơ sở.");
+    return;
+  }
 
-    $("status").textContent =
-      "Vui lòng nhập đầy đủ thông tin.";
+  if (!staff) {
+    alert("Vui lòng nhập tên nhân viên.");
+    return;
+  }
 
+  if (!navigator.mediaDevices ||
+      !navigator.mediaDevices.getUserMedia) {
+
+    alert(
+      "Trình duyệt không hỗ trợ camera. " +
+      "Vui lòng mở bằng Chrome hoặc Safari."
+    );
+
+    return;
+  }
+
+  if (!window.crypto ||
+      !crypto.randomUUID) {
+    alert("Vui lòng cập nhật trình duyệt.");
     return;
   }
 
@@ -361,12 +518,20 @@ function beginReport() {
   $("branch").disabled = true;
   $("staff").disabled = true;
   $("begin").hidden = true;
+
   $("workflow").hidden = false;
+
+  $("reportInfo").textContent =
+    branch + " | " + staff +
+    " | Mã: " + reportId.slice(0,8);
+
+  showStatus("");
 
   refresh();
 
-  $("status").textContent =
-    "Bắt đầu chụp ảnh nghiệm thu.";
+  $("taskSection").scrollIntoView({
+    behavior: "smooth"
+  });
 
 }
 
@@ -375,54 +540,186 @@ function refresh() {
   const count = photos.filter(Boolean).length;
 
   $("progressText").textContent =
-    count + "/8 ảnh";
+    "Đã hoàn thành: " + count + "/8 ảnh";
 
   $("bar").style.width =
     (count / 8 * 100) + "%";
 
-  $("tasks").innerHTML = areas.map((a, i) => `
-    <div class="task">
+  $("tasks").replaceChildren();
+  $("gallery").replaceChildren();
 
-      <b class="${photos[i] ? "done" : ""}">
-        ${photos[i] ? "✓" : "○"}
-      </b>
+  areas.forEach((area, i) => {
 
-      <span>${i + 1}. ${a}</span>
+    const task = document.createElement("div");
 
-      ${photos[i]
-        ? `<button class="secondary"
-             onclick="openArea(${i})">
-             Chụp lại
-           </button>`
-        : `<small>Chưa chụp</small>`
-      }
+    task.className =
+      "task" + (photos[i] ? " completed" : "");
 
-    </div>
-  `).join("");
+    const name = document.createElement("span");
 
-  $("gallery").innerHTML = photos.map((p, i) =>
-    p ? `
-      <div class="photo">
-        <img src="${p}">
-        <p>${i + 1}. ${areas[i]}</p>
-      </div>
-    ` : ""
-  ).join("");
+    name.textContent =
+      (photos[i] ? "✓ " : "○ ") +
+      (i + 1) + ". " + area;
+
+    const btn = document.createElement("button");
+
+    btn.textContent =
+      photos[i] ? "CHỤP LẠI" : "CHỤP";
+
+    btn.className =
+      photos[i] ? "green" : "gold";
+
+    btn.onclick = () => openArea(i);
+
+    task.append(name, btn);
+
+    $("tasks").appendChild(task);
+
+    if (photos[i]) {
+
+      const item = document.createElement("div");
+      item.className = "photoItem";
+
+      const img = document.createElement("img");
+      img.src = photos[i];
+      img.alt = area;
+
+      const text = document.createElement("p");
+      text.textContent = "✓ " + area;
+
+      const retry = document.createElement("button");
+      retry.className = "gray";
+      retry.textContent = "CHỤP LẠI";
+      retry.onclick = () => openArea(i);
+
+      item.append(img, text, retry);
+
+      $("gallery").appendChild(item);
+
+    }
+
+  });
 
   $("gallerySection").hidden = count === 0;
+
   $("finishSection").hidden = count !== 8;
+
   $("openNext").hidden = count === 8;
 
-  $("openNext").textContent =
-    "CHỤP ẢNH " + (count + 1) + "/8";
+  $("confirmCheck").checked = false;
 
 }
 
+function nextArea() {
+
+  const index = photos.findIndex(p => !p);
+
+  if (index !== -1) {
+    openArea(index);
+  }
+
+}
+
+async function openArea(index) {
+
+  if (submitting) return;
+
+  stopCamera();
+
+  current = index;
+  temporaryPhoto = null;
+
+  $("taskSection").hidden = true;
+  $("gallerySection").hidden = true;
+  $("finishSection").hidden = true;
+  $("reviewSection").hidden = true;
+
+  $("cameraSection").hidden = false;
+
+  $("areaTitle").textContent =
+    (index + 1) + "/8 - " + areas[index];
+
+  $("capture").disabled = true;
+
+  showStatus("Đang mở camera...");
+
+  $("cameraSection").scrollIntoView({
+    behavior: "smooth"
+  });
+
+  const request = ++cameraRequest;
+
+  try {
+
+    const newStream =
+      await navigator.mediaDevices.getUserMedia({
+        video: {
+          facingMode: { ideal: "environment" },
+          width: { ideal: 1280 },
+          height: { ideal: 960 }
+        },
+        audio: false
+      });
+
+    if (request !== cameraRequest) {
+
+      newStream.getTracks()
+        .forEach(track => track.stop());
+
+      return;
+
+    }
+
+    stream = newStream;
+
+    $("video").srcObject = stream;
+
+    await $("video").play();
+
+    if (request !== cameraRequest) return;
+
+    $("capture").disabled = false;
+
+    showStatus("");
+
+    updateWatermark();
+
+  } catch (error) {
+
+    if (request !== cameraRequest) return;
+
+    stopCamera();
+
+    showStatus(
+      "Không mở được camera. " +
+      "Kiểm tra quyền camera hoặc mở " +
+      "website bằng Chrome/Safari."
+    );
+
+  }
+
+}
+
+function updateWatermark() {
+
+  $("watermark").textContent =
+    "PHỞ GÀ ĐỒI\n" +
+    branch + " | " + staff + "\n" +
+    areas[current] + "\n" +
+    vietnamTime();
+
+}
+
+setInterval(updateWatermark, 1000);
+
 function stopCamera() {
+
+  cameraRequest++;
 
   if (stream) {
 
-    stream.getTracks().forEach(t => t.stop());
+    stream.getTracks()
+      .forEach(track => track.stop());
 
     stream = null;
 
@@ -432,141 +729,20 @@ function stopCamera() {
 
 }
 
-function openNext() {
-
-  const next = photos.findIndex(p => !p);
-
-  if (next !== -1) {
-    openArea(next);
-  }
-
-}
-
-function openArea(i) {
-
-  current = i;
-  temporaryPhoto = null;
-
-  $("cameraSection").hidden = false;
-  $("finishSection").hidden = true;
-  $("areaTitle").textContent =
-    (i + 1) + "/8 - " + areas[i];
-
-  $("cameraSection").scrollIntoView({
-    behavior: "smooth"
-  });
-
-  startCamera();
-
-}
-
-async function startCamera() {
-
-  if (opening) return;
-
-  opening = true;
-
-  const request = ++cameraRequest;
-
-  stopCamera();
-
-  temporaryPhoto = null;
-
-  $("review").hidden = true;
-  $("canvas").hidden = true;
-  $("capture").hidden = true;
-  $("retry").hidden = true;
-
-  try {
-
-    if (!navigator.mediaDevices?.getUserMedia) {
-
-      throw new Error(
-        "Trình duyệt không hỗ trợ camera"
-      );
-
-    }
-
-    const newStream =
-      await navigator.mediaDevices.getUserMedia({
-
-        video: {
-          facingMode: {
-            ideal: "environment"
-          },
-          width: { ideal: 1280 },
-          height: { ideal: 960 }
-        },
-
-        audio: false
-
-      });
-
-    if (request !== cameraRequest) {
-
-      newStream.getTracks()
-        .forEach(t => t.stop());
-
-      return;
-    }
-
-    stream = newStream;
-
-    $("video").srcObject = stream;
-    $("video").hidden = false;
-
-    await $("video").play();
-
-    if (request !== cameraRequest) return;
-
-    $("watermark").hidden = false;
-
-    $("liveInfo").textContent =
-      branch + " | " + staff +
-      " | " + areas[current];
-
-    $("clock").textContent = getTime();
-
-    $("capture").hidden = false;
-
-    $("status").textContent =
-      "Camera đã sẵn sàng.";
-
-  } catch (e) {
-
-    if (request !== cameraRequest) return;
-
-    stopCamera();
-
-    $("retry").hidden = false;
-
-    $("status").textContent =
-      "Lỗi camera: " + e.message;
-
-  } finally {
-
-    if (request === cameraRequest) {
-      opening = false;
-    }
-
-  }
-
-}
-
 function takePhoto() {
 
   const video = $("video");
-  const canvas = $("canvas");
 
   if (!stream ||
       !video.videoWidth ||
-      video.readyState < 2) {
+      !video.videoHeight) {
 
-    $("status").textContent =
-      "Camera chưa sẵn sàng.";
-
+    alert("Camera chưa sẵn sàng.");
     return;
+
   }
+
+  const canvas = $("canvas");
 
   const scale = Math.min(
     1,
@@ -589,36 +765,37 @@ function takePhoto() {
     canvas.width, canvas.height
   );
 
+  const time = vietnamTime();
+
   const lines = [
     "PHỞ GÀ ĐỒI",
     "Cơ sở: " + branch,
-    "Ngày giờ: " + getTime(),
     "Nhân viên: " + staff,
-    "Nghiệm thu: " + areas[current],
-    "Mã: " + reportId.slice(0, 8)
+    "Khu vực: " + areas[current],
+    "Thời gian: " + time,
+    "Mã: " + reportId.slice(0,8)
   ];
 
-  const size = Math.max(
-    14,
-    Math.round(canvas.width * 0.026)
-  );
+  const fontSize =
+    Math.max(13, Math.round(canvas.width / 38));
 
-  const lineHeight = size * 1.5;
-  const padding = size * 0.7;
+  const lineHeight = fontSize * 1.4;
 
-  const height =
-    lineHeight * lines.length +
-    padding * 2;
+  const padding = fontSize * .7;
 
-  const y = canvas.height - height;
+  const blockHeight =
+    lines.length * lineHeight + padding * 2;
 
-  ctx.fillStyle = "rgba(0,0,0,0.72)";
+  ctx.fillStyle = "rgba(0,0,0,0.75)";
 
   ctx.fillRect(
-    0, y,
-    canvas.width, height
+    0,
+    canvas.height - blockHeight,
+    canvas.width,
+    blockHeight
   );
 
+  ctx.font = "bold " + fontSize + "px Arial";
   ctx.textBaseline = "top";
 
   lines.forEach((line, i) => {
@@ -626,32 +803,53 @@ function takePhoto() {
     ctx.fillStyle =
       i === 0 ? "#f4e5a4" : "#ffffff";
 
-    ctx.font =
-      (i === 0 ? "bold " : "") +
-      size + "px Arial";
-
     ctx.fillText(
       line,
       padding,
-      y + padding + i * lineHeight,
+      canvas.height - blockHeight +
+      padding + i * lineHeight,
       canvas.width - padding * 2
     );
 
   });
 
+  let quality = 0.78;
+
   temporaryPhoto =
-    canvas.toDataURL("image/jpeg", 0.75);
+    canvas.toDataURL("image/jpeg", quality);
+
+  while (
+    temporaryPhoto.length > 1400000 &&
+    quality > 0.35
+  ) {
+
+    quality -= 0.1;
+
+    temporaryPhoto =
+      canvas.toDataURL("image/jpeg", quality);
+
+  }
+
+  if (temporaryPhoto.length > 1400000) {
+
+    temporaryPhoto = null;
+
+    alert("Ảnh quá lớn. Vui lòng chụp lại.");
+
+    return;
+
+  }
 
   stopCamera();
 
-  $("video").hidden = true;
-  $("watermark").hidden = true;
-  $("capture").hidden = true;
-  $("canvas").hidden = false;
-  $("review").hidden = false;
+  $("reviewImage").src = temporaryPhoto;
 
-  $("status").textContent =
-    "Kiểm tra và xác nhận ảnh.";
+  $("cameraSection").hidden = true;
+  $("reviewSection").hidden = false;
+
+  $("reviewSection").scrollIntoView({
+    behavior: "smooth"
+  });
 
 }
 
@@ -663,22 +861,32 @@ function confirmPhoto() {
 
   temporaryPhoto = null;
 
+  $("reviewSection").hidden = true;
+  $("cameraSection").hidden = true;
+  $("taskSection").hidden = false;
+
   refresh();
 
-  const next = photos.findIndex(p => !p);
+  const count = photos.filter(Boolean).length;
 
-  if (next !== -1) {
+  if (count === 8) {
 
-    openArea(next);
+    showStatus(
+      "Đã hoàn thành 8/8 ảnh. " +
+      "Vui lòng kiểm tra và nộp báo cáo."
+    );
+
+    $("finishSection").scrollIntoView({
+      behavior: "smooth"
+    });
 
   } else {
 
-    $("cameraSection").hidden = true;
+    showStatus(
+      "Đã lưu ảnh. Tiến độ: " + count + "/8."
+    );
 
-    $("status").textContent =
-      "Đã hoàn thành đầy đủ 8 ảnh.";
-
-    $("finishSection").scrollIntoView({
+    $("taskSection").scrollIntoView({
       behavior: "smooth"
     });
 
@@ -686,16 +894,21 @@ function confirmPhoto() {
 
 }
 
-function cancelCamera() {
+function retryPhoto() {
+  openArea(current);
+}
 
-  cameraRequest++;
-  opening = false;
+function cancelCamera() {
 
   stopCamera();
 
   temporaryPhoto = null;
 
   $("cameraSection").hidden = true;
+  $("reviewSection").hidden = true;
+  $("taskSection").hidden = false;
+
+  showStatus("");
 
   refresh();
 
@@ -703,30 +916,96 @@ function cancelCamera() {
 
 function finishReport() {
 
-  if (photos.some(p => !p)) {
+  if (submitting) return;
 
-    $("status").textContent =
-      "Chưa đủ 8 ảnh nghiệm thu.";
+  if (photos.filter(Boolean).length !== 8) {
 
+    alert("Chưa đủ 8 ảnh nghiệm thu.");
     return;
+
   }
 
-  $("status").textContent =
-    "Đã xác nhận 8/8 ảnh. " +
-    "Đây là bản thử nghiệm, " +
-    "chưa gửi ảnh về máy chủ.";
+  const pin = $("reportPin").value.trim();
+
+  if (!pin) {
+
+    alert("Vui lòng nhập mã PIN.");
+    $("reportPin").focus();
+    return;
+
+  }
+
+  if (!$("confirmCheck").checked) {
+
+    alert("Vui lòng tích xác nhận nghiệm thu.");
+    return;
+
+  }
+
+  const data = {
+    reportId: reportId,
+    branch: branch,
+    staff: staff,
+    pin: pin,
+    photos: photos
+  };
+
+  const payload = JSON.stringify(data);
+
+  if (payload.length > 12000000 ||
+      photos.some(p => p.length > 1500000)) {
+
+    alert("Dung lượng báo cáo quá lớn.");
+    return;
+
+  }
+
+  submitting = true;
+
+  $("submitReport").disabled = true;
+
+  $("submitReport").textContent =
+    "ĐANG GỬI BÁO CÁO...";
+
+  document.querySelectorAll("button")
+    .forEach(btn => btn.disabled = true);
+
+  $("reportPin").disabled = true;
+
+  stopCamera();
+
+  showStatus(
+    "Đang chuyển 8 ảnh về máy chủ.\n" +
+    "Vui lòng không đóng trang hoặc " +
+    "nhấn quay lại."
+  );
+
+  const form = document.createElement("form");
+
+  form.method = "POST";
+  form.action = API_URL;
+  form.target = "_self";
+
+  form.enctype =
+    "application/x-www-form-urlencoded";
+
+  const field = document.createElement("input");
+
+  field.type = "hidden";
+  field.name = "payload";
+  field.value = payload;
+
+  form.appendChild(field);
+
+  document.body.appendChild(form);
+
+  form.submit();
 
 }
 
-window.addEventListener("pagehide", () => {
-  cameraRequest++;
-  opening = false;
-  stopCamera();
-});
-
 window.addEventListener("beforeunload", e => {
 
-  if (photos.some(Boolean)) {
+  if (!submitting && photos.some(Boolean)) {
 
     e.preventDefault();
     e.returnValue = "";
@@ -734,6 +1013,8 @@ window.addEventListener("beforeunload", e => {
   }
 
 });
+
+window.addEventListener("pagehide", stopCamera);
 
 </script>
 
