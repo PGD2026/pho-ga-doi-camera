@@ -3,15 +3,11 @@
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport"
- content="width=device-width, initial-scale=1">
-
-<title>Phở Gà Đồi Camera</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Phở Gà Đồi Camera V3.1</title>
 
 <style>
-* {
-  box-sizing: border-box;
-}
+* { box-sizing: border-box; }
 
 body {
   margin: 0;
@@ -22,45 +18,101 @@ body {
 }
 
 main {
-  max-width: 550px;
+  max-width: 600px;
   margin: auto;
 }
 
 header {
   background: #941c1c;
   color: #f4e5a4;
-  padding: 20px;
-  text-align: center;
+  padding: 22px;
   border-radius: 12px;
+  text-align: center;
 }
 
-h1 {
-  margin: 0;
-  font-size: 26px;
+h1 { margin: 0; }
+h3 { color: #f4e5a4; }
+
+section {
+  background: #242424;
+  padding: 15px;
+  border-radius: 12px;
+  margin-top: 15px;
 }
 
 label {
   display: block;
-  margin-top: 15px;
-  margin-bottom: 6px;
+  margin: 12px 0 6px;
 }
 
 input, select {
   width: 100%;
   padding: 13px;
-  border: 1px solid #555;
+  background: #333;
+  color: white;
+  border: 1px solid #666;
   border-radius: 8px;
-  background: #292929;
+  font-size: 16px;
+}
+
+button {
+  width: 100%;
+  border: none;
+  border-radius: 8px;
+  padding: 15px;
+  background: #941c1c;
   color: white;
   font-size: 16px;
+  font-weight: bold;
+  margin-top: 10px;
+  cursor: pointer;
+}
+
+button:disabled { opacity: .45; }
+
+[hidden] { display: none !important; }
+
+.secondary { background: #555; }
+.green { background: #21864b; }
+
+.progress {
+  height: 8px;
+  background: #444;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+#bar {
+  height: 100%;
+  width: 0;
+  background: #35b76b;
+  transition: width .2s;
+}
+
+.task {
+  padding: 13px 0;
+  border-bottom: 1px solid #444;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.task span { flex: 1; }
+.done { color: #63d991; }
+.current { color: #f4e5a4; }
+
+.task button {
+  width: auto;
+  padding: 8px;
+  margin: 0;
+  font-size: 12px;
 }
 
 .camera {
   position: relative;
   background: black;
-  border-radius: 12px;
+  border-radius: 10px;
   overflow: hidden;
-  margin-top: 18px;
 }
 
 video, canvas {
@@ -68,62 +120,50 @@ video, canvas {
   display: block;
 }
 
-[hidden] {
-  display: none !important;
-}
-
 .watermark {
   position: absolute;
   bottom: 0;
-  left: 0;
-  right: 0;
+  width: 100%;
   padding: 12px;
   background: rgba(0,0,0,.65);
   font-size: 13px;
-  line-height: 1.6;
+  line-height: 1.5;
   overflow-wrap: anywhere;
 }
 
-.brand {
-  color: #f4e5a4;
-  font-weight: bold;
-}
-
-button {
-  width: 100%;
-  padding: 15px;
-  border: none;
-  border-radius: 9px;
-  background: #941c1c;
-  color: white;
-  font-size: 16px;
-  font-weight: bold;
-  margin-top: 12px;
-  cursor: pointer;
-}
-
-button:disabled {
-  opacity: .45;
-}
-
 #capture {
+  display: block;
   width: 76px;
   height: 76px;
   background: white;
-  border: 6px solid #777;
+  border: 6px solid #888;
   border-radius: 50%;
+  margin: 18px auto;
 }
 
-.controls {
-  text-align: center;
+.gallery {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.photo {
+  background: #333;
+  border-radius: 8px;
+  padding: 8px;
+  font-size: 13px;
+}
+
+.photo img {
+  width: 100%;
+  border-radius: 6px;
 }
 
 #status {
+  color: #f4e5a4;
   text-align: center;
   line-height: 1.5;
-  color: #f4e5a4;
 }
-
 </style>
 </head>
 
@@ -133,78 +173,126 @@ button:disabled {
 <header>
   <h1>PHỞ GÀ ĐỒI</h1>
   <p>ngon từ gà</p>
-  <b>CAMERA NGHIỆM THU V3</b>
+  <b>CAMERA NGHIỆM THU V3.1</b>
 </header>
 
-<label>Cơ sở cửa hàng</label>
+<section>
+  <h3>1. THÔNG TIN NHÂN VIÊN</h3>
 
-<select id="branch">
-  <option value="">Chọn cơ sở</option>
-  <option>28 Võ Chí Công</option>
-  <option>An Khánh</option>
-</select>
+  <label>Cơ sở cửa hàng</label>
+  <select id="branch">
+    <option value="">Chọn cơ sở</option>
+    <option>28 Võ Chí Công</option>
+    <option>An Khánh</option>
+  </select>
 
-<label>Họ và tên nhân viên</label>
+  <label>Họ và tên</label>
+  <input id="staff"
+    maxlength="60"
+    placeholder="Nhập họ và tên">
 
-<input id="staff"
- maxlength="60"
- placeholder="Nhập họ và tên">
+  <button id="begin" onclick="beginReport()">
+    BẮT ĐẦU NGHIỆM THU
+  </button>
+</section>
 
-<label>Khu vực nghiệm thu</label>
+<section id="workflow" hidden>
 
-<select id="area">
-  <option>Khu vực làm phở</option>
-  <option>Khu vực bếp</option>
-  <option>Tủ bảo quản</option>
-  <option>Khu vực khách ngồi</option>
-  <option>Nhà vệ sinh</option>
-  <option>Khu vực rác</option>
-  <option>Điện và gas</option>
-  <option>Khóa cửa hàng</option>
-</select>
+  <h3>2. TIẾN ĐỘ NGHIỆM THU</h3>
 
-<div class="camera">
+  <p id="progressText">0/8 ảnh</p>
 
-  <video id="video"
-    autoplay
-    playsinline
-    muted
-    hidden>
-  </video>
-
-  <canvas id="canvas" hidden></canvas>
-
-  <div class="watermark" id="watermark" hidden>
-    <div class="brand">PHỞ GÀ ĐỒI</div>
-    <div id="liveBranch"></div>
-    <div id="clock"></div>
-    <div id="liveStaff"></div>
-    <div id="liveArea"></div>
+  <div class="progress">
+    <div id="bar"></div>
   </div>
 
-</div>
+  <div id="tasks"></div>
 
-<button id="start" onclick="startCamera()">
-  MỞ CAMERA
-</button>
+  <button id="openNext" onclick="openNext()">
+    MỞ CAMERA
+  </button>
 
-<div class="controls" id="controls" hidden>
+</section>
+
+<section id="cameraSection" hidden>
+
+  <h3 id="areaTitle"></h3>
+
+  <div class="camera">
+
+    <video id="video"
+      autoplay playsinline muted hidden>
+    </video>
+
+    <canvas id="canvas" hidden></canvas>
+
+    <div id="watermark"
+      class="watermark" hidden>
+
+      <b style="color:#f4e5a4">
+        PHỞ GÀ ĐỒI
+      </b>
+
+      <div id="liveInfo"></div>
+      <div id="clock"></div>
+
+    </div>
+  </div>
 
   <button id="capture"
     aria-label="Chụp ảnh"
-    onclick="takePhoto()"
-    disabled>
+    onclick="takePhoto()" hidden>
   </button>
 
-  <p>CHỤP ẢNH NGHIỆM THU</p>
+  <div id="review" hidden>
 
-</div>
+    <button class="green"
+      onclick="confirmPhoto()">
+      XÁC NHẬN ẢNH
+    </button>
 
-<button id="retake"
- onclick="startCamera()"
- hidden>
-  CHỤP LẠI
-</button>
+    <button class="secondary"
+      onclick="startCamera()">
+      CHỤP LẠI
+    </button>
+
+  </div>
+
+  <button id="retry"
+    onclick="startCamera()" hidden>
+    THỬ MỞ CAMERA LẠI
+  </button>
+
+  <button class="secondary"
+    onclick="cancelCamera()">
+    QUAY LẠI DANH SÁCH
+  </button>
+
+</section>
+
+<section id="gallerySection" hidden>
+
+  <h3>3. HÌNH ẢNH ĐÃ CHỤP</h3>
+
+  <div id="gallery" class="gallery"></div>
+
+</section>
+
+<section id="finishSection" hidden>
+
+  <h3>HOÀN THÀNH 8/8 ẢNH</h3>
+
+  <p>
+    Vui lòng kiểm tra lại toàn bộ
+    hình ảnh nghiệm thu.
+  </p>
+
+  <button class="green"
+    onclick="finishReport()">
+    XÁC NHẬN HOÀN THÀNH
+  </button>
+
+</section>
 
 <p id="status" role="status"></p>
 
@@ -214,7 +302,27 @@ button:disabled {
 
 const $ = id => document.getElementById(id);
 
+const areas = [
+  "Khu vực làm phở",
+  "Khu vực bếp",
+  "Tủ bảo quản",
+  "Khu vực khách ngồi",
+  "Nhà vệ sinh",
+  "Khu vực rác",
+  "Điện và gas",
+  "Khóa cửa hàng"
+];
+
+const photos = Array(8).fill(null);
+
 let stream = null;
+let current = 0;
+let temporaryPhoto = null;
+let opening = false;
+let cameraRequest = 0;
+let branch = "";
+let staff = "";
+let reportId = "";
 
 function getTime() {
 
@@ -231,22 +339,84 @@ function getTime() {
 
 }
 
-function updateClock() {
-
+setInterval(() => {
   $("clock").textContent = getTime();
+}, 500);
 
-  $("liveBranch").textContent =
-    "Cơ sở: " + $("branch").value;
+function beginReport() {
 
-  $("liveStaff").textContent =
-    "Nhân viên: " + $("staff").value;
+  branch = $("branch").value;
+  staff = $("staff").value.trim();
 
-  $("liveArea").textContent =
-    $("area").value;
+  if (!branch || !staff) {
+
+    $("status").textContent =
+      "Vui lòng nhập đầy đủ thông tin.";
+
+    return;
+  }
+
+  reportId = crypto.randomUUID();
+
+  $("branch").disabled = true;
+  $("staff").disabled = true;
+  $("begin").hidden = true;
+  $("workflow").hidden = false;
+
+  refresh();
+
+  $("status").textContent =
+    "Bắt đầu chụp ảnh nghiệm thu.";
 
 }
 
-setInterval(updateClock, 500);
+function refresh() {
+
+  const count = photos.filter(Boolean).length;
+
+  $("progressText").textContent =
+    count + "/8 ảnh";
+
+  $("bar").style.width =
+    (count / 8 * 100) + "%";
+
+  $("tasks").innerHTML = areas.map((a, i) => `
+    <div class="task">
+
+      <b class="${photos[i] ? "done" : ""}">
+        ${photos[i] ? "✓" : "○"}
+      </b>
+
+      <span>${i + 1}. ${a}</span>
+
+      ${photos[i]
+        ? `<button class="secondary"
+             onclick="openArea(${i})">
+             Chụp lại
+           </button>`
+        : `<small>Chưa chụp</small>`
+      }
+
+    </div>
+  `).join("");
+
+  $("gallery").innerHTML = photos.map((p, i) =>
+    p ? `
+      <div class="photo">
+        <img src="${p}">
+        <p>${i + 1}. ${areas[i]}</p>
+      </div>
+    ` : ""
+  ).join("");
+
+  $("gallerySection").hidden = count === 0;
+  $("finishSection").hidden = count !== 8;
+  $("openNext").hidden = count === 8;
+
+  $("openNext").textContent =
+    "CHỤP ẢNH " + (count + 1) + "/8";
+
+}
 
 function stopCamera() {
 
@@ -262,41 +432,62 @@ function stopCamera() {
 
 }
 
-function validInfo() {
+function openNext() {
 
-  return $("branch").value &&
-    $("staff").value.trim();
+  const next = photos.findIndex(p => !p);
+
+  if (next !== -1) {
+    openArea(next);
+  }
+
+}
+
+function openArea(i) {
+
+  current = i;
+  temporaryPhoto = null;
+
+  $("cameraSection").hidden = false;
+  $("finishSection").hidden = true;
+  $("areaTitle").textContent =
+    (i + 1) + "/8 - " + areas[i];
+
+  $("cameraSection").scrollIntoView({
+    behavior: "smooth"
+  });
+
+  startCamera();
 
 }
 
 async function startCamera() {
 
-  if (!validInfo()) {
+  if (opening) return;
 
-    $("status").textContent =
-      "Vui lòng chọn cơ sở và nhập tên.";
+  opening = true;
 
-    return;
+  const request = ++cameraRequest;
 
-  }
+  stopCamera();
 
-  $("start").disabled = true;
-  $("retake").disabled = true;
-  $("capture").disabled = true;
+  temporaryPhoto = null;
+
+  $("review").hidden = true;
+  $("canvas").hidden = true;
+  $("capture").hidden = true;
+  $("retry").hidden = true;
 
   try {
-
-    stopCamera();
 
     if (!navigator.mediaDevices?.getUserMedia) {
 
       throw new Error(
-        "Trình duyệt không hỗ trợ Camera API"
+        "Trình duyệt không hỗ trợ camera"
       );
 
     }
 
-    stream =
+    const newStream =
       await navigator.mediaDevices.getUserMedia({
 
         video: {
@@ -311,41 +502,52 @@ async function startCamera() {
 
       });
 
-    $("video").srcObject = stream;
+    if (request !== cameraRequest) {
 
+      newStream.getTracks()
+        .forEach(t => t.stop());
+
+      return;
+    }
+
+    stream = newStream;
+
+    $("video").srcObject = stream;
     $("video").hidden = false;
 
     await $("video").play();
 
-    $("canvas").hidden = true;
-    $("watermark").hidden = false;
-    $("controls").hidden = false;
-    $("capture").disabled = false;
-    $("start").hidden = true;
-    $("retake").hidden = true;
+    if (request !== cameraRequest) return;
 
-    updateClock();
+    $("watermark").hidden = false;
+
+    $("liveInfo").textContent =
+      branch + " | " + staff +
+      " | " + areas[current];
+
+    $("clock").textContent = getTime();
+
+    $("capture").hidden = false;
 
     $("status").textContent =
       "Camera đã sẵn sàng.";
 
   } catch (e) {
 
+    if (request !== cameraRequest) return;
+
     stopCamera();
 
-    $("video").hidden = true;
-    $("watermark").hidden = true;
-    $("controls").hidden = true;
-    $("start").hidden = false;
+    $("retry").hidden = false;
 
     $("status").textContent =
-      "Không mở được camera: " + e.message +
-      ". Kiểm tra quyền camera hoặc mở bằng Safari/Chrome.";
+      "Lỗi camera: " + e.message;
 
   } finally {
 
-    $("start").disabled = false;
-    $("retake").disabled = false;
+    if (request === cameraRequest) {
+      opening = false;
+    }
 
   }
 
@@ -353,26 +555,17 @@ async function startCamera() {
 
 function takePhoto() {
 
-  if (!validInfo()) {
-
-    $("status").textContent =
-      "Thiếu thông tin nhân viên hoặc cơ sở.";
-
-    return;
-
-  }
-
   const video = $("video");
   const canvas = $("canvas");
 
-  if (!stream || !video.videoWidth ||
+  if (!stream ||
+      !video.videoWidth ||
       video.readyState < 2) {
 
     $("status").textContent =
       "Camera chưa sẵn sàng.";
 
     return;
-
   }
 
   const scale = Math.min(
@@ -392,23 +585,22 @@ function takePhoto() {
   const ctx = canvas.getContext("2d");
 
   ctx.drawImage(
-    video,
-    0, 0,
-    canvas.width,
-    canvas.height
+    video, 0, 0,
+    canvas.width, canvas.height
   );
 
   const lines = [
     "PHỞ GÀ ĐỒI",
-    "Cơ sở: " + $("branch").value,
+    "Cơ sở: " + branch,
     "Ngày giờ: " + getTime(),
-    "Nhân viên: " + $("staff").value.trim(),
-    "Nghiệm thu: " + $("area").value
+    "Nhân viên: " + staff,
+    "Nghiệm thu: " + areas[current],
+    "Mã: " + reportId.slice(0, 8)
   ];
 
   const size = Math.max(
     14,
-    Math.round(canvas.width * 0.027)
+    Math.round(canvas.width * 0.026)
   );
 
   const lineHeight = size * 1.5;
@@ -424,8 +616,7 @@ function takePhoto() {
 
   ctx.fillRect(
     0, y,
-    canvas.width,
-    height
+    canvas.width, height
   );
 
   ctx.textBaseline = "top";
@@ -448,24 +639,103 @@ function takePhoto() {
 
   });
 
-  canvas.hidden = false;
-  video.hidden = true;
-
-  $("watermark").hidden = true;
-  $("controls").hidden = true;
-  $("retake").hidden = false;
+  temporaryPhoto =
+    canvas.toDataURL("image/jpeg", 0.75);
 
   stopCamera();
 
+  $("video").hidden = true;
+  $("watermark").hidden = true;
+  $("capture").hidden = true;
+  $("canvas").hidden = false;
+  $("review").hidden = false;
+
   $("status").textContent =
-    "Đã chụp ảnh và đóng dấu ngày giờ thành công.";
+    "Kiểm tra và xác nhận ảnh.";
 
 }
 
-window.addEventListener("pagehide", stopCamera);
+function confirmPhoto() {
+
+  if (!temporaryPhoto) return;
+
+  photos[current] = temporaryPhoto;
+
+  temporaryPhoto = null;
+
+  refresh();
+
+  const next = photos.findIndex(p => !p);
+
+  if (next !== -1) {
+
+    openArea(next);
+
+  } else {
+
+    $("cameraSection").hidden = true;
+
+    $("status").textContent =
+      "Đã hoàn thành đầy đủ 8 ảnh.";
+
+    $("finishSection").scrollIntoView({
+      behavior: "smooth"
+    });
+
+  }
+
+}
+
+function cancelCamera() {
+
+  cameraRequest++;
+  opening = false;
+
+  stopCamera();
+
+  temporaryPhoto = null;
+
+  $("cameraSection").hidden = true;
+
+  refresh();
+
+}
+
+function finishReport() {
+
+  if (photos.some(p => !p)) {
+
+    $("status").textContent =
+      "Chưa đủ 8 ảnh nghiệm thu.";
+
+    return;
+  }
+
+  $("status").textContent =
+    "Đã xác nhận 8/8 ảnh. " +
+    "Đây là bản thử nghiệm, " +
+    "chưa gửi ảnh về máy chủ.";
+
+}
+
+window.addEventListener("pagehide", () => {
+  cameraRequest++;
+  opening = false;
+  stopCamera();
+});
+
+window.addEventListener("beforeunload", e => {
+
+  if (photos.some(Boolean)) {
+
+    e.preventDefault();
+    e.returnValue = "";
+
+  }
+
+});
 
 </script>
 
 </body>
 </html>
-
