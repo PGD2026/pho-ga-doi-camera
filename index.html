@@ -12,7 +12,9 @@ content="width=device-width,initial-scale=1">
 
 <style>
 
-* { box-sizing: border-box; }
+* {
+  box-sizing: border-box;
+}
 
 body {
   margin: 0;
@@ -180,6 +182,25 @@ button:disabled {
   font-size: 14px;
 }
 
+#inventoryModule .inv-option {
+  margin-top: 0;
+}
+
+#inventoryModule .inv-field label {
+  margin-top: 0;
+}
+
+#inventoryModule .inv-field input {
+  margin-top: 0;
+}
+
+.inventory-guide {
+  font-size: 13px;
+  line-height: 1.6;
+  color: #bbb;
+  margin-top: 16px;
+}
+
 footer {
   text-align: center;
   color: #999;
@@ -188,23 +209,34 @@ footer {
 }
 
 </style>
+
 </head>
 
 <body>
+
 <main>
 
 <header>
+
   <h1>PHỞ GÀ ĐỒI</h1>
+
   <p>ngon từ gà</p>
+
   NGHIỆM THU CUỐI CA
+
 </header>
+
 
 <form id="reportForm"
 method="POST"
 action="https://script.google.com/macros/s/AKfycbw_UbTAImQnlFTRWJUft0pa4pODY9Gpmin79EQpnwu_5yjbI6mcitQXQCDQP-Qv04N62g/exec">
 
+
 <input type="hidden"
 name="payload" id="payload">
+
+
+<!-- 01. THÔNG TIN NHÂN VIÊN -->
 
 <section>
 
@@ -213,49 +245,93 @@ name="payload" id="payload">
 <label for="branch">Cơ sở</label>
 
 <select id="branch" required>
-  <option value="">-- Chọn cơ sở --</option>
+
+  <option value="">
+    -- Chọn cơ sở --
+  </option>
+
   <option value="28 Võ Chí Công">
     CS1 - 28 Võ Chí Công
   </option>
+
   <option value="An Khánh">
     CS2 - An Khánh
   </option>
+
 </select>
 
-<label for="staff">Họ và tên nhân viên</label>
+
+<label for="staff">
+  Họ và tên nhân viên
+</label>
 
 <input id="staff"
 maxlength="60"
 placeholder="Nhập họ và tên"
 required>
 
-<label for="shift">Ca làm việc</label>
+
+<label for="shift">
+  Ca làm việc
+</label>
 
 <select id="shift" required>
-  <option value="">-- Chọn ca --</option>
+
+  <option value="">
+    -- Chọn ca --
+  </option>
+
   <option>Ca sáng</option>
+
   <option>Ca tối</option>
+
   <option>Ca đêm</option>
+
 </select>
 
 </section>
 
+
+<!-- 02. KIỂM KÊ CUỐI NGÀY -->
+
+<p class="inventory-guide">
+
+  Vui lòng chọn đúng cơ sở trước khi kiểm kê.
+  Nhập số 0 nếu không còn hàng hoặc không có
+  hàng hủy. Chọn Gần hết nếu vật tư không đủ
+  sử dụng cho ngày tiếp theo.
+
+</p>
+
 <div id="inventoryModule"></div>
+
+
+<!-- 03. HÌNH ẢNH NGHIỆM THU -->
+
 <section>
 
 <h2>03. HÌNH ẢNH NGHIỆM THU</h2>
 
-<div id="progressText">0/11 ảnh</div>
-
-<div class="progress">
-  <div id="progressBar"></div>
+<div id="progressText">
+  0/11 ảnh
 </div>
 
-<p>Chụp đủ 11 khu vực theo thứ tự bên dưới.</p>
+<div class="progress">
+
+  <div id="progressBar"></div>
+
+</div>
+
+<p>
+  Chụp đủ 11 khu vực theo thứ tự bên dưới.
+</p>
 
 <div id="photoList"></div>
 
 </section>
+
+
+<!-- 04. GHI CHÚ VÀ XÁC NHẬN -->
 
 <section>
 
@@ -263,23 +339,29 @@ required>
 
 <textarea id="note"
 maxlength="500"
-placeholder="Ghi chú các vấn đề phát sinh...">
-</textarea>
+placeholder="Ghi chú các vấn đề phát sinh..."></textarea>
+
 
 <label class="confirm">
 
 <input type="checkbox" id="confirmed">
 
 <span>
-Tôi xác nhận đã kiểm tra đầy đủ các khu vực
-và chịu trách nhiệm về nội dung báo cáo.
+
+  Tôi xác nhận đã hoàn thành kiểm kê,
+  kiểm tra đầy đủ các khu vực và chịu
+  trách nhiệm về nội dung báo cáo.
+
 </span>
 
 </label>
 
+
 <button type="submit"
 id="submit" disabled>
-  GỬI BÁO CÁO (0/11)
+
+  GỬI BÁO CÁO (0/41 - 0/11)
+
 </button>
 
 <p id="status"></p>
@@ -288,32 +370,59 @@ id="submit" disabled>
 
 </form>
 
+
 <footer>
+
   PHỞ GÀ ĐỒI<br><br>
-  V1.0 - Giai đoạn 5 - 11 ảnh
+
+  V1.0 - Giai đoạn 6 - Kiểm kê 41 + 11 ảnh
+
 </footer>
 
 </main>
 
+
+<!-- KẾT NỐI MODULE KIỂM KÊ -->
+
+<script src="./inventory.js?v=106"></script>
+
+
 <script>
 
+
+// DANH SÁCH 11 KHU VỰC NGHIỆM THU
+
 const AREAS = [
+
   "Khu vực làm phở",
+
   "Khu vực điện và gas",
+
   "Khu vực bếp rửa bát",
+
   "Tủ lạnh bảo quản",
+
   "Khu vực giấm + ớt + măng",
+
   "Khu vực ngoài sân 1",
+
   "Khu vực ngoài sân 2",
+
   "Khu vực rác",
+
   "Đồ đóng gói mang về",
+
   "Nhà vệ sinh",
+
   "Khóa cửa hàng"
+
 ];
+
 
 const photos = Array(11).fill(null);
 
 const processing = new Set();
+
 
 const form =
   document.getElementById("reportForm");
@@ -339,41 +448,94 @@ const staff =
 const shift =
   document.getElementById("shift");
 
+
 const reportId = window.crypto?.randomUUID
+
   ? crypto.randomUUID()
+
   : "";
+
 
 let sending = false;
 
+let inventoryTouched = false;
+
+let inventoryBranch = "";
+
+
+// CẬP NHẬT TIẾN ĐỘ BÁO CÁO
 
 function updateProgress() {
 
   const count = photos.filter(Boolean).length;
 
+  const inventoryReady =
+    typeof Inventory !== "undefined";
+
+  const inventoryCount = inventoryReady
+
+    ? Inventory.getCount()
+
+    : 0;
+
+
   document.getElementById(
     "progressText"
   ).textContent = count + "/11 ảnh";
+
 
   document.getElementById(
     "progressBar"
   ).style.width = (count / 11 * 100) + "%";
 
+
   submit.textContent =
-    "GỬI BÁO CÁO (" + count + "/11)";
+
+    "GỬI BÁO CÁO (" +
+
+    inventoryCount +
+
+    "/41 kiểm kê - " +
+
+    count +
+
+    "/11 ảnh)";
+
 
   submit.disabled =
 
+    !inventoryReady ||
+
+    !Inventory.isComplete() ||
+
     count !== 11 ||
+
     processing.size > 0 ||
+
     !confirmed.checked ||
+
     !branch.value ||
+
     !staff.value.trim() ||
+
     !shift.value ||
+
     !reportId ||
+
     sending;
+
+
+  if (sending) {
+
+    submit.textContent =
+      "ĐANG GỬI KIỂM KÊ VÀ 11 ẢNH...";
+
+  }
 
 }
 
+
+// TẠO 11 KHUNG CHỤP ẢNH
 
 AREAS.forEach(function(area, i) {
 
@@ -386,37 +548,56 @@ AREAS.forEach(function(area, i) {
   card.innerHTML = `
 
     <div class="photo-title">
+
       ${String(i + 1).padStart(2, "0")}.
+
       ${area}
+
     </div>
 
     <input type="file"
+
       class="camera-input"
+
       id="camera${i}"
+
       accept="image/*"
+
       capture="environment">
 
     <img class="preview"
+
       id="preview${i}"
+
       alt="${area}">
 
     <div class="photo-status"
+
       id="photoStatus${i}">
+
       Chưa có ảnh
+
     </div>
 
   `;
 
+
   list.appendChild(card);
 
+
   const input = document.getElementById(
+
     "camera" + i
+
   );
+
 
   input.addEventListener("change", function() {
 
     if (input.files[0]) {
+
       processPhoto(input.files[0], i);
+
     }
 
     input.value = "";
@@ -426,54 +607,85 @@ AREAS.forEach(function(area, i) {
 });
 
 
+// XỬ LÝ HÌNH ẢNH
+
 function processPhoto(file, i) {
 
   if (processing.has(i) || sending) return;
 
+
   if (!branch.value) {
 
-    alert("Vui lòng chọn cơ sở trước khi chụp.");
+    alert(
+      "Vui lòng chọn cơ sở trước khi chụp."
+    );
 
     return;
 
   }
 
+
   const selectedBranch = branch.value;
 
+
   const input = document.getElementById(
+
     "camera" + i
+
   );
+
 
   const card = document.getElementById(
+
     "card" + i
+
   );
+
 
   const preview = document.getElementById(
+
     "preview" + i
+
   );
 
+
   const photoStatus = document.getElementById(
+
     "photoStatus" + i
+
   );
+
 
   processing.add(i);
 
+
   input.disabled = true;
+
   branch.disabled = true;
+
+  confirmed.checked = false;
+
 
   photos[i] = null;
 
+
   card.classList.remove("done");
+
 
   preview.style.display = "none";
 
-  photoStatus.textContent = "Đang xử lý ảnh...";
+
+  photoStatus.textContent =
+    "Đang xử lý ảnh...";
+
 
   updateProgress();
+
 
   const url = URL.createObjectURL(file);
 
   const img = new Image();
+
 
   function finish() {
 
@@ -489,282 +701,734 @@ function processPhoto(file, i) {
 
   }
 
+
   img.onload = function() {
 
     try {
 
       const maxSize = 1100;
 
+
       const ratio = Math.min(
+
         1,
+
         maxSize / Math.max(
+
           img.width, img.height
+
         )
+
       );
+
 
       const canvas =
+
         document.createElement("canvas");
 
+
       canvas.width = Math.max(
+
         1, Math.round(img.width * ratio)
+
       );
+
 
       const imageHeight = Math.max(
+
         1, Math.round(img.height * ratio)
+
       );
+
 
       const stampHeight = Math.max(
+
         90, Math.round(canvas.width * 0.14)
+
       );
 
-      canvas.height = imageHeight + stampHeight;
+
+      canvas.height =
+
+        imageHeight + stampHeight;
+
 
       const ctx = canvas.getContext("2d");
 
+
       ctx.fillStyle = "#ffffff";
 
+
       ctx.fillRect(
+
         0, 0, canvas.width, canvas.height
+
       );
+
 
       ctx.drawImage(
+
         img, 0, 0, canvas.width, imageHeight
+
       );
 
+
       const time = new Date().toLocaleString(
+
         "vi-VN",
+
         { timeZone: "Asia/Ho_Chi_Minh" }
+
       );
+
+
+      // NỀN ĐÓNG DẤU
 
       ctx.fillStyle = "#151515";
 
+
       ctx.fillRect(
+
         0, imageHeight,
+
         canvas.width, stampHeight
+
       );
+
 
       ctx.fillStyle = "#f4e5a4";
 
+
       const fontSize = Math.max(
+
         10, Math.round(canvas.width * 0.029)
+
       );
 
-      ctx.font = "bold " + fontSize + "px Arial";
+
+      ctx.font =
+
+        "bold " + fontSize + "px Arial";
+
+
+      // TÊN CỬA HÀNG
 
       ctx.fillText(
+
         "PHỞ GÀ ĐỒI - " + selectedBranch,
+
         10,
+
         imageHeight + stampHeight * 0.25,
+
         canvas.width - 20
+
       );
+
 
       ctx.fillStyle = "#ffffff";
 
-      ctx.fillText(
-        (i + 1) + ". " + AREAS[i],
-        10,
-        imageHeight + stampHeight * 0.52,
-        canvas.width - 20
-      );
+
+      // TÊN KHU VỰC
 
       ctx.fillText(
-        "Xử lý ảnh: " + time,
+
+        (i + 1) + ". " + AREAS[i],
+
         10,
-        imageHeight + stampHeight * 0.8,
+
+        imageHeight + stampHeight * 0.52,
+
         canvas.width - 20
+
       );
+
+
+      // THỜI GIAN XỬ LÝ ẢNH
+
+      ctx.fillText(
+
+        "Xử lý ảnh: " + time,
+
+        10,
+
+        imageHeight + stampHeight * 0.8,
+
+        canvas.width - 20
+
+      );
+
+
+      // NÉN ẢNH
 
       let quality = 0.72;
 
+
       let data = canvas.toDataURL(
+
         "image/jpeg", quality
+
       );
 
+
       while (
+
         data.length > 650000 &&
+
         quality > 0.3
+
       ) {
 
         quality -= 0.08;
 
+
         data = canvas.toDataURL(
+
           "image/jpeg", quality
+
         );
 
       }
 
+
       if (
-        !data.startsWith("data:image/jpeg;base64,") ||
+
+        !data.startsWith(
+          "data:image/jpeg;base64,"
+        ) ||
+
         data.length > 650000
+
       ) {
 
         throw new Error("Ảnh quá lớn.");
 
       }
 
+
       photos[i] = {
+
         data: data
+
       };
+
 
       preview.src = data;
 
+
       preview.style.display = "block";
+
 
       card.classList.add("done");
 
+
       photoStatus.textContent =
+
         "✓ Đã có ảnh - Có thể chụp lại";
+
 
     } catch (error) {
 
+
       photoStatus.textContent =
+
         "Lỗi xử lý ảnh. Vui lòng chụp lại.";
+
 
     } finally {
 
+
       finish();
+
 
     }
 
   };
 
+
   img.onerror = function() {
 
+
     photoStatus.textContent =
+
       "Không đọc được ảnh. Hãy chụp lại.";
+
 
     finish();
 
+
   };
+
 
   img.src = url;
 
 }
 
 
+// XỬ LÝ KHI THAY ĐỔI CƠ SỞ
+
 branch.addEventListener("change", function() {
+
+
+  // KHÔNG CHO ĐỔI CƠ SỞ SAU KHI KIỂM KÊ
+
+  if (
+
+    inventoryTouched &&
+
+    branch.value !== inventoryBranch
+
+  ) {
+
+    branch.value = inventoryBranch;
+
+
+    alert(
+
+      "Bạn đã nhập dữ liệu kiểm kê cho cơ sở này. " +
+
+      "Nếu muốn đổi cơ sở, vui lòng tải lại trang " +
+
+      "và thực hiện báo cáo mới."
+
+    );
+
+
+    updateProgress();
+
+    return;
+
+  }
+
+
+  confirmed.checked = false;
+
+
+  // XÓA ẢNH CŨ KHI ĐỔI CƠ SỞ
 
   if (photos.some(Boolean)) {
 
+
     photos.fill(null);
+
 
     AREAS.forEach(function(_, i) {
 
-      document.getElementById(
+
+      const preview = document.getElementById(
+
         "preview" + i
-      ).style.display = "none";
+
+      );
+
+
+      preview.style.display = "none";
+
+      preview.removeAttribute("src");
+
 
       document.getElementById(
+
         "card" + i
+
       ).classList.remove("done");
 
+
       document.getElementById(
+
         "photoStatus" + i
+
       ).textContent = "Chưa có ảnh";
+
 
     });
 
-    confirmed.checked = false;
 
     alert(
+
       "Đã đổi cơ sở. Vui lòng chụp lại ảnh."
+
     );
 
   }
+
 
   updateProgress();
 
 });
 
 
-staff.addEventListener("input", updateProgress);
+// CẬP NHẬT KHI THAY ĐỔI THÔNG TIN
 
-shift.addEventListener("change", updateProgress);
+staff.addEventListener("input", function() {
+
+  confirmed.checked = false;
+
+  updateProgress();
+
+});
+
+
+shift.addEventListener("change", function() {
+
+  confirmed.checked = false;
+
+  updateProgress();
+
+});
+
 
 confirmed.addEventListener(
+
   "change", updateProgress
+
 );
 
 
+document.getElementById("note")
+  .addEventListener("input", function() {
+
+    confirmed.checked = false;
+
+    updateProgress();
+
+  });
+
+
+// GỬI BÁO CÁO
+
 form.addEventListener("submit", function(e) {
 
+
+  // KIỂM TRA MODULE KIỂM KÊ
+
   if (
-    sending ||
-    processing.size ||
-    photos.filter(Boolean).length !== 11 ||
-    !confirmed.checked ||
-    !reportId ||
-    !branch.value ||
-    !staff.value.trim() ||
-    !shift.value
+
+    typeof Inventory === "undefined" ||
+
+    !Inventory.isComplete()
+
   ) {
 
     e.preventDefault();
+
+
+    status.textContent =
+
+      "Vui lòng hoàn thành đủ 41 hạng mục " +
+
+      "kiểm kê và giải trình hàng hủy nếu có.";
+
 
     return;
 
   }
 
-  const data = {
 
-    reportId: reportId,
+  // KIỂM TRA THÔNG TIN VÀ 11 ẢNH
 
-    branch: branch.value,
+  if (
 
-    staff: staff.value.trim(),
+    sending ||
 
-    shift: shift.value,
+    processing.size ||
 
-    note: document.getElementById("note")
-      .value.trim(),
+    photos.filter(Boolean).length !== 11 ||
 
-    confirmed: true,
+    !confirmed.checked ||
 
-    photos: photos
+    !reportId ||
 
-  };
+    !branch.value ||
 
-  document.getElementById("payload").value =
-    JSON.stringify(data);
+    !staff.value.trim() ||
+
+    !shift.value ||
+
+    (
+
+      inventoryTouched &&
+
+      branch.value !== inventoryBranch
+
+    )
+
+  ) {
+
+
+    e.preventDefault();
+
+
+    status.textContent =
+
+      "Vui lòng hoàn thành đầy đủ báo cáo.";
+
+
+    return;
+
+  }
+
+
+  // TỔNG HỢP DỮ LIỆU GỬI API
+
+  let data;
+
+
+  try {
+
+
+    data = {
+
+
+      ...Inventory.getData(),
+
+
+      reportId: reportId,
+
+
+      branch: branch.value,
+
+
+      staff: staff.value.trim(),
+
+
+      shift: shift.value,
+
+
+      note: document.getElementById("note")
+        .value.trim(),
+
+
+      confirmed: true,
+
+
+      photos: photos
+
+
+    };
+
+
+    const payload = JSON.stringify(data);
+
+
+    if (payload.length > 8500000) {
+
+      throw new Error(
+        "Dữ liệu báo cáo quá lớn."
+      );
+
+    }
+
+
+    document.getElementById("payload").value =
+
+      payload;
+
+
+  } catch (error) {
+
+
+    e.preventDefault();
+
+
+    status.textContent =
+
+      "Không thể tạo báo cáo: " +
+
+      error.message;
+
+
+    return;
+
+  }
+
+
+  // KHÓA NÚT GỬI CHỐNG GỬI TRÙNG
 
   sending = true;
 
+
   submit.disabled = true;
 
-  submit.textContent = "ĐANG GỬI 11 ẢNH...";
+
+  submit.textContent =
+
+    "ĐANG GỬI KIỂM KÊ VÀ 11 ẢNH...";
+
 
   status.textContent =
+
     "Vui lòng chờ, không đóng hoặc tải lại trang.";
+
 
 });
 
 
+// XỬ LÝ KHI QUAY LẠI TRANG
+
 window.addEventListener("pageshow", function(e) {
+
 
   if (e.persisted && sending) {
 
+
     sending = false;
+
 
     updateProgress();
 
+
     status.textContent =
+
       "Kiểm tra báo cáo cũ trước khi gửi lại.";
+
 
   }
 
 });
 
 
-if (!reportId) {
+// KHỞI TẠO MODULE KIỂM KÊ
+
+if (typeof Inventory !== "undefined") {
+
+
+  const inventoryModule =
+
+    document.getElementById("inventoryModule");
+
+
+  Inventory.mount(
+
+    inventoryModule,
+
+    updateProgress
+
+  );
+
+
+  // GHI NHẬN CƠ SỞ ĐANG KIỂM KÊ
+
+  function markInventoryTouched() {
+
+
+    if (branch.value) {
+
+
+      inventoryTouched = true;
+
+
+      inventoryBranch = branch.value;
+
+
+    }
+
+
+    confirmed.checked = false;
+
+
+    updateProgress();
+
+  }
+
+
+  inventoryModule.addEventListener(
+
+    "input",
+
+    markInventoryTouched
+
+  );
+
+
+  inventoryModule.addEventListener(
+
+    "click",
+
+    function(e) {
+
+
+      if (e.target.closest(".inv-option")) {
+
+
+        markInventoryTouched();
+
+
+      }
+
+    }
+
+  );
+
+
+  // CHỈ CHO KIỂM KÊ SAU KHI CHỌN CƠ SỞ
+
+  function toggleInventory() {
+
+
+    inventoryModule.inert = !branch.value;
+
+
+    inventoryModule.style.opacity =
+
+      branch.value ? "1" : "0.6";
+
+
+    inventoryModule
+      .querySelectorAll("input, textarea, button")
+      .forEach(function(field) {
+
+        field.disabled = !branch.value;
+
+      });
+
+
+  }
+
+
+  branch.addEventListener(
+
+    "change",
+
+    toggleInventory
+
+  );
+
+
+  toggleInventory();
+
+
+} else {
+
 
   status.textContent =
-    "Vui lòng sử dụng Safari hoặc Chrome mới.";
+
+    "Không tải được phần kiểm kê. " +
+
+    "Vui lòng tải lại trang.";
+
 
 }
 
+
+// KIỂM TRA TRÌNH DUYỆT
+
+if (!reportId) {
+
+
+  status.textContent =
+
+    "Vui lòng sử dụng Safari hoặc Chrome mới.";
+
+
+}
+
+
 updateProgress();
+
 
 </script>
 
 </body>
+
 </html>
