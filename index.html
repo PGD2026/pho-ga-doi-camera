@@ -8,7 +8,7 @@
 <meta name="viewport"
 content="width=device-width,initial-scale=1">
 
-<title>Phở Gà Đồi - V1.0</title>
+<title>Phở Gà Đồi - Nghiệm thu cuối ca</title>
 
 <style>
 
@@ -22,7 +22,7 @@ body {
 }
 
 main {
-  max-width: 500px;
+  max-width: 550px;
   margin: auto;
   padding: 16px;
 }
@@ -30,12 +30,15 @@ main {
 header {
   background: #941c1c;
   color: #f4e5a4;
-  padding: 24px 12px;
+  padding: 25px 12px;
   border-radius: 12px;
   text-align: center;
 }
 
-h1 { margin: 0; font-size: 30px; }
+h1 {
+  margin: 0;
+  font-size: 30px;
+}
 
 h2 {
   color: #f4e5a4;
@@ -44,7 +47,7 @@ h2 {
 
 section {
   background: #242424;
-  padding: 18px;
+  padding: 16px;
   margin-top: 16px;
   border-radius: 12px;
 }
@@ -66,40 +69,112 @@ input, select, textarea {
   font: 16px Arial;
 }
 
-button, .camera-button {
-  display: block;
-  width: 100%;
-  background: #f4e5a4;
-  color: #222;
-  border: 0;
-  border-radius: 8px;
-  padding: 16px;
-  margin-top: 16px;
+textarea {
+  min-height: 80px;
+}
+
+.photo-card {
+  background: #303030;
+  padding: 14px;
+  border: 1px solid #555;
+  border-radius: 10px;
+  margin-top: 12px;
+}
+
+.photo-card.done {
+  border-color: #63d991;
+}
+
+.photo-title {
   font-size: 16px;
   font-weight: bold;
-  text-align: center;
+  line-height: 1.5;
+}
+
+.camera-input {
+  position: static;
+  display: block;
+  opacity: 1;
+  width: 100%;
+  height: auto;
+  background: #f4e5a4;
+  color: #222;
+  padding: 12px;
+}
+
+.preview {
+  display: none;
+  width: 100%;
+  max-height: 320px;
+  object-fit: contain;
+  border-radius: 8px;
+  margin-top: 12px;
+}
+
+.photo-status {
+  font-size: 13px;
+  color: #bbb;
+  margin-top: 10px;
+}
+
+.done .photo-status {
+  color: #63d991;
+}
+
+.progress {
+  background: #444;
+  height: 9px;
+  border-radius: 10px;
+  overflow: hidden;
+  margin-top: 12px;
+}
+
+#progressBar {
+  height: 100%;
+  width: 0%;
+  background: #63d991;
+  transition: width .2s;
+}
+
+#progressText {
+  color: #f4e5a4;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.confirm {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.confirm input {
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+  margin: 0;
+}
+
+button {
+  width: 100%;
+  border: 0;
+  border-radius: 9px;
+  padding: 17px;
+  margin-top: 18px;
+  background: #f4e5a4;
+  color: #222;
+  font-size: 16px;
+  font-weight: bold;
 }
 
 button:disabled {
-  opacity: .4;
+  background: #444;
+  color: #aaa;
 }
 
-#camera {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  opacity: 0;
-  overflow: hidden;
-}
-
-#preview {
-  display: none;
-  width: 100%;
-  margin-top: 15px;
-  border-radius: 8px;
-}
-
-#photoStatus, #status {
+#status {
   text-align: center;
   color: #f4e5a4;
   font-size: 14px;
@@ -109,7 +184,7 @@ footer {
   text-align: center;
   color: #999;
   font-size: 12px;
-  padding: 20px;
+  padding: 25px;
 }
 
 </style>
@@ -121,7 +196,7 @@ footer {
 <header>
   <h1>PHỞ GÀ ĐỒI</h1>
   <p>ngon từ gà</p>
-  HỆ THỐNG QUẢN LÝ VẬN HÀNH
+  NGHIỆM THU CUỐI CA
 </header>
 
 <form id="reportForm"
@@ -129,18 +204,15 @@ method="POST"
 action="https://script.google.com/macros/s/AKfycbw_UbTAImQnlFTRWJUft0pa4pODY9Gpmin79EQpnwu_5yjbI6mcitQXQCDQP-Qv04N62g/exec">
 
 <input type="hidden"
-name="reportId" id="reportId">
-
-<input type="hidden"
-name="photo" id="photo">
+name="payload" id="payload">
 
 <section>
 
-<h2>01. THÔNG TIN CA LÀM VIỆC</h2>
+<h2>01. THÔNG TIN NHÂN VIÊN</h2>
 
-<label>Cơ sở</label>
+<label for="branch">Cơ sở</label>
 
-<select name="branch" required>
+<select id="branch" required>
   <option value="">-- Chọn cơ sở --</option>
   <option value="28 Võ Chí Công">
     CS1 - 28 Võ Chí Công
@@ -150,27 +222,21 @@ name="photo" id="photo">
   </option>
 </select>
 
-<label>Họ và tên nhân viên</label>
+<label for="staff">Họ và tên nhân viên</label>
 
-<input name="staff"
+<input id="staff"
 maxlength="60"
 placeholder="Nhập họ và tên"
 required>
 
-<label>Ca làm việc</label>
+<label for="shift">Ca làm việc</label>
 
-<select name="shift" required>
+<select id="shift" required>
   <option value="">-- Chọn ca --</option>
   <option>Ca sáng</option>
   <option>Ca tối</option>
   <option>Ca đêm</option>
 </select>
-
-<label>Ghi chú</label>
-
-<textarea name="note"
-maxlength="500"
-placeholder="Nội dung kiểm thử"></textarea>
 
 </section>
 
@@ -178,39 +244,41 @@ placeholder="Nội dung kiểm thử"></textarea>
 
 <h2>02. HÌNH ẢNH NGHIỆM THU</h2>
 
-<p>Chụp 1 ảnh để kiểm tra hệ thống.</p>
+<div id="progressText">0/11 ảnh</div>
 
-<input
-  type="file"
-  id="camera"
-  accept="image/*"
-  capture="environment"
-  style="position:static;
-         width:100%;
-         height:auto;
-         opacity:1;
-         display:block;
-         padding:15px;
-         background:#f4e5a4;
-         color:#222;">
+<div class="progress">
+  <div id="progressBar"></div>
+</div>
 
-<p id="cameraLabel">
-  📷 Chụp ảnh nghiệm thu
-</p>
+<p>Chụp đủ 11 khu vực theo thứ tự bên dưới.</p>
 
-<img id="preview" alt="Ảnh kiểm thử">
-
-<p id="photoStatus">
-  Chưa có ảnh
-</p>
+<div id="photoList"></div>
 
 </section>
 
 <section>
 
+<h2>03. GHI CHÚ VÀ XÁC NHẬN</h2>
+
+<textarea id="note"
+maxlength="500"
+placeholder="Ghi chú các vấn đề phát sinh...">
+</textarea>
+
+<label class="confirm">
+
+<input type="checkbox" id="confirmed">
+
+<span>
+Tôi xác nhận đã kiểm tra đầy đủ các khu vực
+và chịu trách nhiệm về nội dung báo cáo.
+</span>
+
+</label>
+
 <button type="submit"
 id="submit" disabled>
-  GỬI BÁO CÁO
+  GỬI BÁO CÁO (0/11)
 </button>
 
 <p id="status"></p>
@@ -221,89 +289,234 @@ id="submit" disabled>
 
 <footer>
   PHỞ GÀ ĐỒI<br><br>
-  V1.0 - Giai đoạn 4
+  V1.0 - Giai đoạn 5 - 11 ảnh
 </footer>
 
 </main>
 
 <script>
 
+const AREAS = [
+  "Khu vực làm phở",
+  "Khu vực điện và gas",
+  "Khu vực bếp rửa bát",
+  "Tủ lạnh bảo quản",
+  "Khu vực giấm + ớt + măng",
+  "Khu vực ngoài sân 1",
+  "Khu vực ngoài sân 2",
+  "Khu vực rác",
+  "Đồ đóng gói mang về",
+  "Nhà vệ sinh",
+  "Khóa cửa hàng"
+];
+
+const photos = Array(11).fill(null);
+
+const processing = new Set();
+
 const form =
   document.getElementById("reportForm");
 
-const camera =
-  document.getElementById("camera");
-
-const preview =
-  document.getElementById("preview");
-
-const photo =
-  document.getElementById("photo");
+const list =
+  document.getElementById("photoList");
 
 const submit =
   document.getElementById("submit");
 
-const photoStatus =
-  document.getElementById("photoStatus");
+const confirmed =
+  document.getElementById("confirmed");
 
 const status =
   document.getElementById("status");
 
+const branch =
+  document.getElementById("branch");
+
+const staff =
+  document.getElementById("staff");
+
+const shift =
+  document.getElementById("shift");
+
+const reportId = window.crypto?.randomUUID
+  ? crypto.randomUUID()
+  : "";
+
 let sending = false;
-let processing = false;
 
-if (window.crypto?.randomUUID) {
 
-  document.getElementById("reportId").value =
-    crypto.randomUUID();
+function updateProgress() {
 
-} else {
+  const count = photos.filter(Boolean).length;
 
-  status.textContent =
-    "Vui lòng sử dụng Safari hoặc Chrome mới.";
+  document.getElementById(
+    "progressText"
+  ).textContent = count + "/11 ảnh";
+
+  document.getElementById(
+    "progressBar"
+  ).style.width = (count / 11 * 100) + "%";
+
+  submit.textContent =
+    "GỬI BÁO CÁO (" + count + "/11)";
+
+  submit.disabled =
+
+    count !== 11 ||
+    processing.size > 0 ||
+    !confirmed.checked ||
+    !branch.value ||
+    !staff.value.trim() ||
+    !shift.value ||
+    !reportId ||
+    sending;
 
 }
 
-camera.addEventListener("change", function() {
 
-  const file = camera.files[0];
+AREAS.forEach(function(area, i) {
 
-  if (!file || sending) return;
+  const card = document.createElement("div");
 
-  processing = true;
-  submit.disabled = true;
-  photo.value = "";
+  card.className = "photo-card";
+
+  card.id = "card" + i;
+
+  card.innerHTML = `
+
+    <div class="photo-title">
+      ${String(i + 1).padStart(2, "0")}.
+      ${area}
+    </div>
+
+    <input type="file"
+      class="camera-input"
+      id="camera${i}"
+      accept="image/*"
+      capture="environment">
+
+    <img class="preview"
+      id="preview${i}"
+      alt="${area}">
+
+    <div class="photo-status"
+      id="photoStatus${i}">
+      Chưa có ảnh
+    </div>
+
+  `;
+
+  list.appendChild(card);
+
+  const input = document.getElementById(
+    "camera" + i
+  );
+
+  input.addEventListener("change", function() {
+
+    if (input.files[0]) {
+      processPhoto(input.files[0], i);
+    }
+
+    input.value = "";
+
+  });
+
+});
+
+
+function processPhoto(file, i) {
+
+  if (processing.has(i) || sending) return;
+
+  if (!branch.value) {
+
+    alert("Vui lòng chọn cơ sở trước khi chụp.");
+
+    return;
+
+  }
+
+  const selectedBranch = branch.value;
+
+  const input = document.getElementById(
+    "camera" + i
+  );
+
+  const card = document.getElementById(
+    "card" + i
+  );
+
+  const preview = document.getElementById(
+    "preview" + i
+  );
+
+  const photoStatus = document.getElementById(
+    "photoStatus" + i
+  );
+
+  processing.add(i);
+
+  input.disabled = true;
+  branch.disabled = true;
+
+  photos[i] = null;
+
+  card.classList.remove("done");
+
   preview.style.display = "none";
 
-  photoStatus.textContent =
-    "Đang xử lý ảnh...";
+  photoStatus.textContent = "Đang xử lý ảnh...";
+
+  updateProgress();
 
   const url = URL.createObjectURL(file);
 
   const img = new Image();
 
+  function finish() {
+
+    processing.delete(i);
+
+    input.disabled = false;
+
+    branch.disabled = processing.size > 0;
+
+    URL.revokeObjectURL(url);
+
+    updateProgress();
+
+  }
+
   img.onload = function() {
 
     try {
 
-      const maxSize = 1280;
+      const maxSize = 1100;
 
       const ratio = Math.min(
         1,
         maxSize / Math.max(
-          img.width,
-          img.height
+          img.width, img.height
         )
       );
 
       const canvas =
         document.createElement("canvas");
 
-      canvas.width =
-        Math.max(1, Math.round(img.width * ratio));
+      canvas.width = Math.max(
+        1, Math.round(img.width * ratio)
+      );
 
-      canvas.height =
-        Math.max(1, Math.round(img.height * ratio));
+      const imageHeight = Math.max(
+        1, Math.round(img.height * ratio)
+      );
+
+      const stampHeight = Math.max(
+        90, Math.round(canvas.width * 0.14)
+      );
+
+      canvas.height = imageHeight + stampHeight;
 
       const ctx = canvas.getContext("2d");
 
@@ -314,22 +527,64 @@ camera.addEventListener("change", function() {
       );
 
       ctx.drawImage(
-        img, 0, 0,
-        canvas.width, canvas.height
+        img, 0, 0, canvas.width, imageHeight
       );
 
-      let quality = 0.75;
+      const time = new Date().toLocaleString(
+        "vi-VN",
+        { timeZone: "Asia/Ho_Chi_Minh" }
+      );
+
+      ctx.fillStyle = "#151515";
+
+      ctx.fillRect(
+        0, imageHeight,
+        canvas.width, stampHeight
+      );
+
+      ctx.fillStyle = "#f4e5a4";
+
+      const fontSize = Math.max(
+        10, Math.round(canvas.width * 0.029)
+      );
+
+      ctx.font = "bold " + fontSize + "px Arial";
+
+      ctx.fillText(
+        "PHỞ GÀ ĐỒI - " + selectedBranch,
+        10,
+        imageHeight + stampHeight * 0.25,
+        canvas.width - 20
+      );
+
+      ctx.fillStyle = "#ffffff";
+
+      ctx.fillText(
+        (i + 1) + ". " + AREAS[i],
+        10,
+        imageHeight + stampHeight * 0.52,
+        canvas.width - 20
+      );
+
+      ctx.fillText(
+        "Xử lý ảnh: " + time,
+        10,
+        imageHeight + stampHeight * 0.8,
+        canvas.width - 20
+      );
+
+      let quality = 0.72;
 
       let data = canvas.toDataURL(
         "image/jpeg", quality
       );
 
       while (
-        data.length > 1500000 &&
+        data.length > 650000 &&
         quality > 0.3
       ) {
 
-        quality -= 0.1;
+        quality -= 0.08;
 
         data = canvas.toDataURL(
           "image/jpeg", quality
@@ -339,27 +594,25 @@ camera.addEventListener("change", function() {
 
       if (
         !data.startsWith("data:image/jpeg;base64,") ||
-        data.length > 1500000
+        data.length > 650000
       ) {
+
         throw new Error("Ảnh quá lớn.");
+
       }
 
-      photo.value = data;
+      photos[i] = {
+        data: data
+      };
 
       preview.src = data;
+
       preview.style.display = "block";
 
+      card.classList.add("done");
+
       photoStatus.textContent =
-        "✓ Ảnh đã sẵn sàng - " +
-        Math.round(data.length * 0.75 / 1024) +
-        " KB";
-
-      document.getElementById(
-        "cameraLabel"
-      ).textContent = "📷 CHỤP LẠI";
-
-      submit.disabled =
-        !document.getElementById("reportId").value;
+        "✓ Đã có ảnh - Có thể chụp lại";
 
     } catch (error) {
 
@@ -368,8 +621,7 @@ camera.addEventListener("change", function() {
 
     } finally {
 
-      processing = false;
-      URL.revokeObjectURL(url);
+      finish();
 
     }
 
@@ -377,40 +629,114 @@ camera.addEventListener("change", function() {
 
   img.onerror = function() {
 
-    processing = false;
-
     photoStatus.textContent =
       "Không đọc được ảnh. Hãy chụp lại.";
 
-    URL.revokeObjectURL(url);
+    finish();
 
   };
 
   img.src = url;
 
-  camera.value = "";
+}
+
+
+branch.addEventListener("change", function() {
+
+  if (photos.some(Boolean)) {
+
+    photos.fill(null);
+
+    AREAS.forEach(function(_, i) {
+
+      document.getElementById(
+        "preview" + i
+      ).style.display = "none";
+
+      document.getElementById(
+        "card" + i
+      ).classList.remove("done");
+
+      document.getElementById(
+        "photoStatus" + i
+      ).textContent = "Chưa có ảnh";
+
+    });
+
+    confirmed.checked = false;
+
+    alert(
+      "Đã đổi cơ sở. Vui lòng chụp lại ảnh."
+    );
+
+  }
+
+  updateProgress();
 
 });
 
+
+staff.addEventListener("input", updateProgress);
+
+shift.addEventListener("change", updateProgress);
+
+confirmed.addEventListener(
+  "change", updateProgress
+);
+
+
 form.addEventListener("submit", function(e) {
 
-  if (sending || processing || !photo.value) {
+  if (
+    sending ||
+    processing.size ||
+    photos.filter(Boolean).length !== 11 ||
+    !confirmed.checked ||
+    !reportId ||
+    !branch.value ||
+    !staff.value.trim() ||
+    !shift.value
+  ) {
 
     e.preventDefault();
+
     return;
 
   }
+
+  const data = {
+
+    reportId: reportId,
+
+    branch: branch.value,
+
+    staff: staff.value.trim(),
+
+    shift: shift.value,
+
+    note: document.getElementById("note")
+      .value.trim(),
+
+    confirmed: true,
+
+    photos: photos
+
+  };
+
+  document.getElementById("payload").value =
+    JSON.stringify(data);
 
   sending = true;
 
   submit.disabled = true;
 
-  submit.textContent = "ĐANG GỬI...";
+  submit.textContent = "ĐANG GỬI 11 ẢNH...";
 
   status.textContent =
-    "Vui lòng không đóng trang.";
+    "Vui lòng chờ, không đóng hoặc tải lại trang.";
 
 });
+
 
 window.addEventListener("pageshow", function(e) {
 
@@ -418,16 +744,24 @@ window.addEventListener("pageshow", function(e) {
 
     sending = false;
 
-    submit.disabled = !photo.value;
-
-    submit.textContent = "GỬI BÁO CÁO";
+    updateProgress();
 
     status.textContent =
-      "Kiểm tra Telegram trước khi gửi lại.";
+      "Kiểm tra báo cáo cũ trước khi gửi lại.";
 
   }
 
 });
+
+
+if (!reportId) {
+
+  status.textContent =
+    "Vui lòng sử dụng Safari hoặc Chrome mới.";
+
+}
+
+updateProgress();
 
 </script>
 
