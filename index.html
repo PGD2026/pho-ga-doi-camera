@@ -4,9 +4,7 @@
 <head>
 
 <meta charset="UTF-8">
-
-<meta name="viewport"
-content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 
 <title>Phở Gà Đồi - Nghiệm thu cuối ca</title>
 
@@ -159,7 +157,7 @@ textarea {
   margin: 0;
 }
 
-button {
+#submit {
   width: 100%;
   border: 0;
   border-radius: 9px;
@@ -171,7 +169,7 @@ button {
   font-weight: bold;
 }
 
-button:disabled {
+#submit:disabled {
   background: #444;
   color: #aaa;
 }
@@ -180,18 +178,6 @@ button:disabled {
   text-align: center;
   color: #f4e5a4;
   font-size: 14px;
-}
-
-#inventoryModule .inv-option {
-  margin-top: 0;
-}
-
-#inventoryModule .inv-field label {
-  margin-top: 0;
-}
-
-#inventoryModule .inv-field input {
-  margin-top: 0;
 }
 
 .inventory-guide {
@@ -217,23 +203,18 @@ footer {
 <main>
 
 <header>
-
   <h1>PHỞ GÀ ĐỒI</h1>
-
   <p>ngon từ gà</p>
-
   NGHIỆM THU CUỐI CA
-
 </header>
-
 
 <form id="reportForm"
 method="POST"
 action="https://script.google.com/macros/s/AKfycbw_UbTAImQnlFTRWJUft0pa4pODY9Gpmin79EQpnwu_5yjbI6mcitQXQCDQP-Qv04N62g/exec">
 
-
 <input type="hidden"
-name="payload" id="payload">
+name="payload"
+id="payload">
 
 
 <!-- 01. THÔNG TIN NHÂN VIÊN -->
@@ -246,9 +227,7 @@ name="payload" id="payload">
 
 <select id="branch" required>
 
-  <option value="">
-    -- Chọn cơ sở --
-  </option>
+  <option value="">-- Chọn cơ sở --</option>
 
   <option value="28 Võ Chí Công">
     CS1 - 28 Võ Chí Công
@@ -260,7 +239,6 @@ name="payload" id="payload">
 
 </select>
 
-
 <label for="staff">
   Họ và tên nhân viên
 </label>
@@ -270,16 +248,13 @@ maxlength="60"
 placeholder="Nhập họ và tên"
 required>
 
-
 <label for="shift">
   Ca làm việc
 </label>
 
 <select id="shift" required>
 
-  <option value="">
-    -- Chọn ca --
-  </option>
+  <option value="">-- Chọn ca --</option>
 
   <option>Ca sáng</option>
 
@@ -312,9 +287,7 @@ required>
 
 <h2>03. HÌNH ẢNH NGHIỆM THU</h2>
 
-<div id="progressText">
-  0/11 ảnh
-</div>
+<div id="progressText">0/11 ảnh</div>
 
 <div class="progress">
 
@@ -341,7 +314,6 @@ required>
 maxlength="500"
 placeholder="Ghi chú các vấn đề phát sinh..."></textarea>
 
-
 <label class="confirm">
 
 <input type="checkbox" id="confirmed">
@@ -356,9 +328,9 @@ placeholder="Ghi chú các vấn đề phát sinh..."></textarea>
 
 </label>
 
-
 <button type="submit"
-id="submit" disabled>
+id="submit"
+disabled>
 
   GỬI BÁO CÁO (0/41 - 0/11)
 
@@ -369,7 +341,6 @@ id="submit" disabled>
 </section>
 
 </form>
-
 
 <footer>
 
@@ -382,47 +353,34 @@ id="submit" disabled>
 </main>
 
 
-<!-- KẾT NỐI MODULE KIỂM KÊ -->
+<!-- BƯỚC 3: KẾT NỐI FILE INVENTORY.JS -->
 
 <script src="./inventory.js?v=106"></script>
-
 
 <script>
 
 
-// DANH SÁCH 11 KHU VỰC NGHIỆM THU
+// DANH SÁCH 11 KHU VỰC CHỤP ẢNH
 
 const AREAS = [
 
   "Khu vực làm phở",
-
   "Khu vực điện và gas",
-
   "Khu vực bếp rửa bát",
-
   "Tủ lạnh bảo quản",
-
   "Khu vực giấm + ớt + măng",
-
   "Khu vực ngoài sân 1",
-
   "Khu vực ngoài sân 2",
-
   "Khu vực rác",
-
   "Đồ đóng gói mang về",
-
   "Nhà vệ sinh",
-
   "Khóa cửa hàng"
 
 ];
 
-
 const photos = Array(11).fill(null);
 
 const processing = new Set();
-
 
 const form =
   document.getElementById("reportForm");
@@ -448,6 +406,8 @@ const staff =
 const shift =
   document.getElementById("shift");
 
+const inventoryModule =
+  document.getElementById("inventoryModule");
 
 const reportId = window.crypto?.randomUUID
 
@@ -455,21 +415,25 @@ const reportId = window.crypto?.randomUUID
 
   : "";
 
-
 let sending = false;
 
 let inventoryTouched = false;
 
 let inventoryBranch = "";
 
+let inventoryShift = "";
 
-// CẬP NHẬT TIẾN ĐỘ BÁO CÁO
+let inventoryMounted = false;
+
+
+// BƯỚC 4: KIỂM TRA TIẾN ĐỘ VÀ KHÓA NÚT GỬI
 
 function updateProgress() {
 
   const count = photos.filter(Boolean).length;
 
   const inventoryReady =
+    inventoryMounted &&
     typeof Inventory !== "undefined";
 
   const inventoryCount = inventoryReady
@@ -478,16 +442,13 @@ function updateProgress() {
 
     : 0;
 
-
   document.getElementById(
     "progressText"
   ).textContent = count + "/11 ảnh";
 
-
   document.getElementById(
     "progressBar"
   ).style.width = (count / 11 * 100) + "%";
-
 
   submit.textContent =
 
@@ -500,7 +461,6 @@ function updateProgress() {
     count +
 
     "/11 ảnh)";
-
 
   submit.disabled =
 
@@ -523,7 +483,6 @@ function updateProgress() {
     !reportId ||
 
     sending;
-
 
   if (sending) {
 
@@ -556,23 +515,16 @@ AREAS.forEach(function(area, i) {
     </div>
 
     <input type="file"
-
       class="camera-input"
-
       id="camera${i}"
-
       accept="image/*"
-
       capture="environment">
 
     <img class="preview"
-
       id="preview${i}"
-
       alt="${area}">
 
     <div class="photo-status"
-
       id="photoStatus${i}">
 
       Chưa có ảnh
@@ -581,16 +533,11 @@ AREAS.forEach(function(area, i) {
 
   `;
 
-
   list.appendChild(card);
 
-
   const input = document.getElementById(
-
     "camera" + i
-
   );
-
 
   input.addEventListener("change", function() {
 
@@ -607,57 +554,39 @@ AREAS.forEach(function(area, i) {
 });
 
 
-// XỬ LÝ HÌNH ẢNH
+// XỬ LÝ CAMERA VÀ HÌNH ẢNH
 
 function processPhoto(file, i) {
 
   if (processing.has(i) || sending) return;
 
-
   if (!branch.value) {
 
-    alert(
-      "Vui lòng chọn cơ sở trước khi chụp."
-    );
+    alert("Vui lòng chọn cơ sở trước khi chụp.");
 
     return;
 
   }
 
-
   const selectedBranch = branch.value;
 
-
   const input = document.getElementById(
-
     "camera" + i
-
   );
-
 
   const card = document.getElementById(
-
     "card" + i
-
   );
-
 
   const preview = document.getElementById(
-
     "preview" + i
-
   );
-
 
   const photoStatus = document.getElementById(
-
     "photoStatus" + i
-
   );
 
-
   processing.add(i);
-
 
   input.disabled = true;
 
@@ -665,27 +594,20 @@ function processPhoto(file, i) {
 
   confirmed.checked = false;
 
-
   photos[i] = null;
-
 
   card.classList.remove("done");
 
-
   preview.style.display = "none";
-
 
   photoStatus.textContent =
     "Đang xử lý ảnh...";
 
-
   updateProgress();
-
 
   const url = URL.createObjectURL(file);
 
   const img = new Image();
-
 
   function finish() {
 
@@ -701,77 +623,70 @@ function processPhoto(file, i) {
 
   }
 
-
   img.onload = function() {
 
     try {
 
       const maxSize = 1100;
 
-
       const ratio = Math.min(
 
         1,
 
         maxSize / Math.max(
-
-          img.width, img.height
-
+          img.width,
+          img.height
         )
 
       );
 
-
       const canvas =
-
         document.createElement("canvas");
-
 
       canvas.width = Math.max(
 
-        1, Math.round(img.width * ratio)
+        1,
+
+        Math.round(img.width * ratio)
 
       );
-
 
       const imageHeight = Math.max(
 
-        1, Math.round(img.height * ratio)
+        1,
+
+        Math.round(img.height * ratio)
 
       );
-
 
       const stampHeight = Math.max(
 
-        90, Math.round(canvas.width * 0.14)
+        90,
+
+        Math.round(canvas.width * 0.14)
 
       );
 
-
-      canvas.height =
-
-        imageHeight + stampHeight;
-
+      canvas.height = imageHeight + stampHeight;
 
       const ctx = canvas.getContext("2d");
 
-
       ctx.fillStyle = "#ffffff";
 
-
       ctx.fillRect(
-
-        0, 0, canvas.width, canvas.height
-
+        0,
+        0,
+        canvas.width,
+        canvas.height
       );
-
 
       ctx.drawImage(
-
-        img, 0, 0, canvas.width, imageHeight
-
+        img,
+        0,
+        0,
+        canvas.width,
+        imageHeight
       );
-
 
       const time = new Date().toLocaleString(
 
@@ -782,36 +697,29 @@ function processPhoto(file, i) {
       );
 
 
-      // NỀN ĐÓNG DẤU
+      // ĐÓNG DẤU HÌNH ẢNH
 
       ctx.fillStyle = "#151515";
 
-
       ctx.fillRect(
-
-        0, imageHeight,
-
-        canvas.width, stampHeight
-
+        0,
+        imageHeight,
+        canvas.width,
+        stampHeight
       );
-
 
       ctx.fillStyle = "#f4e5a4";
 
-
       const fontSize = Math.max(
 
-        10, Math.round(canvas.width * 0.029)
+        10,
+
+        Math.round(canvas.width * 0.029)
 
       );
 
-
       ctx.font =
-
         "bold " + fontSize + "px Arial";
-
-
-      // TÊN CỬA HÀNG
 
       ctx.fillText(
 
@@ -825,11 +733,7 @@ function processPhoto(file, i) {
 
       );
 
-
       ctx.fillStyle = "#ffffff";
-
-
-      // TÊN KHU VỰC
 
       ctx.fillText(
 
@@ -842,9 +746,6 @@ function processPhoto(file, i) {
         canvas.width - 20
 
       );
-
-
-      // THỜI GIAN XỬ LÝ ẢNH
 
       ctx.fillText(
 
@@ -859,17 +760,14 @@ function processPhoto(file, i) {
       );
 
 
-      // NÉN ẢNH
+      // NÉN HÌNH ẢNH
 
       let quality = 0.72;
 
-
       let data = canvas.toDataURL(
-
-        "image/jpeg", quality
-
+        "image/jpeg",
+        quality
       );
-
 
       while (
 
@@ -881,15 +779,12 @@ function processPhoto(file, i) {
 
         quality -= 0.08;
 
-
         data = canvas.toDataURL(
-
-          "image/jpeg", quality
-
+          "image/jpeg",
+          quality
         );
 
       }
-
 
       if (
 
@@ -905,72 +800,54 @@ function processPhoto(file, i) {
 
       }
 
-
       photos[i] = {
 
         data: data
 
       };
 
-
       preview.src = data;
-
 
       preview.style.display = "block";
 
-
       card.classList.add("done");
-
 
       photoStatus.textContent =
 
         "✓ Đã có ảnh - Có thể chụp lại";
 
-
     } catch (error) {
-
 
       photoStatus.textContent =
 
         "Lỗi xử lý ảnh. Vui lòng chụp lại.";
 
-
     } finally {
 
-
       finish();
-
 
     }
 
   };
 
-
   img.onerror = function() {
-
 
     photoStatus.textContent =
 
       "Không đọc được ảnh. Hãy chụp lại.";
 
-
     finish();
 
-
   };
-
 
   img.src = url;
 
 }
 
 
-// XỬ LÝ KHI THAY ĐỔI CƠ SỞ
+// XỬ LÝ THAY ĐỔI CƠ SỞ
 
 branch.addEventListener("change", function() {
-
-
-  // KHÔNG CHO ĐỔI CƠ SỞ SAU KHI KIỂM KÊ
 
   if (
 
@@ -982,17 +859,13 @@ branch.addEventListener("change", function() {
 
     branch.value = inventoryBranch;
 
-
     alert(
 
       "Bạn đã nhập dữ liệu kiểm kê cho cơ sở này. " +
 
-      "Nếu muốn đổi cơ sở, vui lòng tải lại trang " +
-
-      "và thực hiện báo cáo mới."
+      "Nếu muốn đổi cơ sở, vui lòng tải lại trang."
 
     );
-
 
     updateProgress();
 
@@ -1000,49 +873,31 @@ branch.addEventListener("change", function() {
 
   }
 
-
   confirmed.checked = false;
-
-
-  // XÓA ẢNH CŨ KHI ĐỔI CƠ SỞ
 
   if (photos.some(Boolean)) {
 
-
     photos.fill(null);
-
 
     AREAS.forEach(function(_, i) {
 
-
       const preview = document.getElementById(
-
         "preview" + i
-
       );
-
 
       preview.style.display = "none";
 
       preview.removeAttribute("src");
 
-
       document.getElementById(
-
         "card" + i
-
       ).classList.remove("done");
 
-
       document.getElementById(
-
         "photoStatus" + i
-
       ).textContent = "Chưa có ảnh";
 
-
     });
-
 
     alert(
 
@@ -1052,13 +907,12 @@ branch.addEventListener("change", function() {
 
   }
 
-
   updateProgress();
 
 });
 
 
-// CẬP NHẬT KHI THAY ĐỔI THÔNG TIN
+// CẬP NHẬT THÔNG TIN NHÂN VIÊN
 
 staff.addEventListener("input", function() {
 
@@ -1068,8 +922,27 @@ staff.addEventListener("input", function() {
 
 });
 
-
 shift.addEventListener("change", function() {
+
+  if (
+
+    inventoryTouched &&
+
+    shift.value !== inventoryShift
+
+  ) {
+
+    shift.value = inventoryShift;
+
+    alert(
+
+      "Đã nhập kiểm kê cho ca này. " +
+
+      "Muốn đổi ca, vui lòng tải lại trang."
+
+    );
+
+  }
 
   confirmed.checked = false;
 
@@ -1077,13 +950,13 @@ shift.addEventListener("change", function() {
 
 });
 
-
 confirmed.addEventListener(
 
-  "change", updateProgress
+  "change",
+
+  updateProgress
 
 );
-
 
 document.getElementById("note")
   .addEventListener("input", function() {
@@ -1095,14 +968,13 @@ document.getElementById("note")
   });
 
 
-// GỬI BÁO CÁO
+// BƯỚC 5: BỔ SUNG DỮ LIỆU KIỂM KÊ KHI GỬI
 
 form.addEventListener("submit", function(e) {
 
-
-  // KIỂM TRA MODULE KIỂM KÊ
-
   if (
+
+    !inventoryMounted ||
 
     typeof Inventory === "undefined" ||
 
@@ -1112,26 +984,21 @@ form.addEventListener("submit", function(e) {
 
     e.preventDefault();
 
-
     status.textContent =
 
       "Vui lòng hoàn thành đủ 41 hạng mục " +
 
       "kiểm kê và giải trình hàng hủy nếu có.";
 
-
     return;
 
   }
-
-
-  // KIỂM TRA THÔNG TIN VÀ 11 ẢNH
 
   if (
 
     sending ||
 
-    processing.size ||
+    processing.size > 0 ||
 
     photos.filter(Boolean).length !== 11 ||
 
@@ -1145,71 +1012,48 @@ form.addEventListener("submit", function(e) {
 
     !shift.value ||
 
-    (
+    !inventoryTouched ||
 
-      inventoryTouched &&
+    branch.value !== inventoryBranch ||
 
-      branch.value !== inventoryBranch
-
-    )
+    shift.value !== inventoryShift
 
   ) {
 
-
     e.preventDefault();
-
 
     status.textContent =
 
       "Vui lòng hoàn thành đầy đủ báo cáo.";
 
-
     return;
 
   }
 
-
-  // TỔNG HỢP DỮ LIỆU GỬI API
-
-  let data;
-
-
   try {
 
-
-    data = {
-
+    const data = {
 
       ...Inventory.getData(),
 
-
       reportId: reportId,
-
 
       branch: branch.value,
 
-
       staff: staff.value.trim(),
 
-
       shift: shift.value,
-
 
       note: document.getElementById("note")
         .value.trim(),
 
-
       confirmed: true,
-
 
       photos: photos
 
-
     };
 
-
     const payload = JSON.stringify(data);
-
 
     if (payload.length > 8500000) {
 
@@ -1219,17 +1063,13 @@ form.addEventListener("submit", function(e) {
 
     }
 
-
-    document.getElementById("payload").value =
-
-      payload;
-
+    document.getElementById(
+      "payload"
+    ).value = payload;
 
   } catch (error) {
 
-
     e.preventDefault();
-
 
     status.textContent =
 
@@ -1237,176 +1077,146 @@ form.addEventListener("submit", function(e) {
 
       error.message;
 
-
     return;
 
   }
 
-
-  // KHÓA NÚT GỬI CHỐNG GỬI TRÙNG
-
   sending = true;
 
-
   submit.disabled = true;
-
 
   submit.textContent =
 
     "ĐANG GỬI KIỂM KÊ VÀ 11 ẢNH...";
 
-
   status.textContent =
 
     "Vui lòng chờ, không đóng hoặc tải lại trang.";
 
-
 });
 
 
-// XỬ LÝ KHI QUAY LẠI TRANG
+// XỬ LÝ KHI QUAY LẠI WEBSITE
 
 window.addEventListener("pageshow", function(e) {
 
-
   if (e.persisted && sending) {
-
 
     sending = false;
 
-
     updateProgress();
-
 
     status.textContent =
 
       "Kiểm tra báo cáo cũ trước khi gửi lại.";
 
-
   }
 
 });
 
 
-// KHỞI TẠO MODULE KIỂM KÊ
+// BƯỚC 6: KHỞI ĐỘNG GIAO DIỆN KIỂM KÊ
 
 if (typeof Inventory !== "undefined") {
 
+  try {
 
-  const inventoryModule =
+    Inventory.mount(
 
-    document.getElementById("inventoryModule");
+      inventoryModule,
 
+      function() {
 
-  Inventory.mount(
+        if (inventoryMounted) {
 
-    inventoryModule,
+          confirmed.checked = false;
 
-    updateProgress
+          if (branch.value && shift.value) {
 
-  );
+            inventoryTouched = true;
 
+            inventoryBranch = branch.value;
 
-  // GHI NHẬN CƠ SỞ ĐANG KIỂM KÊ
+            inventoryShift = shift.value;
 
-  function markInventoryTouched() {
+          }
 
+        }
 
-    if (branch.value) {
-
-
-      inventoryTouched = true;
-
-
-      inventoryBranch = branch.value;
-
-
-    }
-
-
-    confirmed.checked = false;
-
-
-    updateProgress();
-
-  }
-
-
-  inventoryModule.addEventListener(
-
-    "input",
-
-    markInventoryTouched
-
-  );
-
-
-  inventoryModule.addEventListener(
-
-    "click",
-
-    function(e) {
-
-
-      if (e.target.closest(".inv-option")) {
-
-
-        markInventoryTouched();
-
+        updateProgress();
 
       }
 
+    );
+
+    inventoryMounted = true;
+
+
+    // CHỈ CHO KIỂM KÊ SAU KHI CHỌN CƠ SỞ VÀ CA
+
+    function toggleInventory() {
+
+      const enabled = Boolean(
+
+        branch.value && shift.value
+
+      );
+
+      inventoryModule.inert = !enabled;
+
+      inventoryModule.style.opacity =
+
+        enabled ? "1" : "0.6";
+
+      inventoryModule
+        .querySelectorAll(
+          "input, textarea, button, select"
+        )
+        .forEach(function(field) {
+
+          field.disabled = !enabled;
+
+        });
+
     }
 
-  );
+    branch.addEventListener(
 
+      "change",
 
-  // CHỈ CHO KIỂM KÊ SAU KHI CHỌN CƠ SỞ
+      toggleInventory
 
-  function toggleInventory() {
+    );
 
+    shift.addEventListener(
 
-    inventoryModule.inert = !branch.value;
+      "change",
 
+      toggleInventory
 
-    inventoryModule.style.opacity =
+    );
 
-      branch.value ? "1" : "0.6";
+    toggleInventory();
 
+  } catch (error) {
 
-    inventoryModule
-      .querySelectorAll("input, textarea, button")
-      .forEach(function(field) {
+    inventoryMounted = false;
 
-        field.disabled = !branch.value;
+    status.textContent =
 
-      });
+      "Lỗi khởi động kiểm kê: " +
 
+      error.message;
 
   }
 
-
-  branch.addEventListener(
-
-    "change",
-
-    toggleInventory
-
-  );
-
-
-  toggleInventory();
-
-
 } else {
-
 
   status.textContent =
 
-    "Không tải được phần kiểm kê. " +
+    "Không tải được file inventory.js. " +
 
     "Vui lòng tải lại trang.";
-
 
 }
 
@@ -1415,17 +1225,13 @@ if (typeof Inventory !== "undefined") {
 
 if (!reportId) {
 
-
   status.textContent =
 
     "Vui lòng sử dụng Safari hoặc Chrome mới.";
 
-
 }
 
-
 updateProgress();
-
 
 </script>
 
